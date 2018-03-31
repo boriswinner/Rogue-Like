@@ -1,4 +1,5 @@
 #include "curses.h"
+#include "game_objects.h"
 
 int main()
 {
