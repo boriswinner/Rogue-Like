@@ -29,6 +29,7 @@ private:
     int hp_;
     int damage_;
 
+public:
     int get_hp() const{
         return hp_;
     }
@@ -49,8 +50,16 @@ private:
         return image_;
     }
 
-    void move(){
-
+    void move(Map& map, const int xoffset, const int yoffset){
+        vector <vector <vector <MapObject*>>> &cells = map.get_map();
+        for (int i = 0; i < cells[position_.x][position_.y].size(); ++i){
+            if (cells[position_.x][position_.y][i] == this){
+                cells[position_.x][position_.y].erase(cells[position_.x][position_.y].begin() + i);
+            }
+        }
+        position_.x += xoffset;
+        position_.y += yoffset;
+        map.add_to_cell(position_.x,position_.y,this);
     }
 };
 
@@ -74,9 +83,9 @@ public:
         }
     }
 
-    void set_cell(int x, int y, MapObject* object){
-        cells[x][y].erase(cells[x][y].begin(),cells[x][y].end());
-        cells[x][y][0] = object;
+    void add_to_cell(int x, int y, MapObject* object){
+        //cells[x][y].erase(cells[x][y].begin(),cells[x][y].end());
+        cells[x][y].push_back(object);
     }
 
     vector <vector <vector <MapObject*>>> &get_map(){
