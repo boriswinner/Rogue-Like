@@ -1,2 +1,2 @@
 # Rogue-Like
-A Rogut-Like console game, programming homework
+A Rogue-Like console game, programming homework
