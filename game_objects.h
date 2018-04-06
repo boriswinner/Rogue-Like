@@ -27,6 +27,10 @@ public:
     void set_position(pnt position){
         position_ = position;
     }
+
+    char get_image() const{
+        return image_;
+    }
 };
 
 class Character: public MapObject{
@@ -57,11 +61,7 @@ public:
         damage_ = damage;
     }
 
-    char get_image() const{
-        return image_;
-    }
-
-    void move(Map& map, const int xoffset, const int yoffset);
+    void move(const int xoffset, const int yoffset);
 };
 
 class Player: public Character{
@@ -72,10 +72,11 @@ public:
 class Map{
 private:
     const int sizex_,sizey_;
-    vector <vector <vector <MapObject*>>> cells;
+    vector <vector <vector <shared_ptr<MapObject>>>> cells;
 public:
     Map(const unsigned int sizex, const unsigned int sizey, vector<shared_ptr<MapObject>> &objects): sizex_(sizex), sizey_(sizey){
-        vector <vector <vector <shared_ptr<MapObject>>>> cells = vector <vector <vector <shared_ptr<MapObject>>>>(sizex);
+        cells.resize(sizex);
+        //vector <vector <vector <shared_ptr<MapObject>>>> cells = vector <vector <vector <shared_ptr<MapObject>>>>(sizex);
         for (int i = 0; i < sizex; ++i){
             cells[i].resize(sizey);
         }
@@ -87,10 +88,10 @@ public:
 
     void add_to_cell(int x, int y, MapObject* object){
         //cells[x][y].erase(cells[x][y].begin(),cells[x][y].end());
-        cells[x][y].push_back(object);
+        //cells[x][y].push_back(object);
     }
 
-    vector <vector <vector <MapObject*>>> &get_map(){
+    vector <vector <vector <shared_ptr<MapObject>>>> &get_map(){
         return cells;
     }
 };
