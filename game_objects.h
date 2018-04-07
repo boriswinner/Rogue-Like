@@ -72,17 +72,18 @@ public:
 class Map{
 private:
     const int sizex_,sizey_;
+    vector<shared_ptr<MapObject>> objs;
     vector <vector <vector <shared_ptr<MapObject>>>> cells;
 public:
     Map(const unsigned int sizex, const unsigned int sizey, vector<shared_ptr<MapObject>> &objects): sizex_(sizex), sizey_(sizey){
-        cells.resize(sizex);
+        cells.resize(sizey);
         //vector <vector <vector <shared_ptr<MapObject>>>> cells = vector <vector <vector <shared_ptr<MapObject>>>>(sizex);
-        for (int i = 0; i < sizex; ++i){
-            cells[i].resize(sizey);
+        for (int i = 0; i < sizey; ++i){
+            cells[i].resize(sizex);
         }
         for (int i = 0; i < objects.size(); ++i){
             pnt pos = objects[i]->get_position();
-            cells[pos.x][pos.y].push_back(objects[i]);
+            cells[pos.y][pos.x].push_back(objects[i]);
         }
     }
 
