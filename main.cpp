@@ -10,10 +10,12 @@ int main()
 {
 
     //create objects
-    shared_ptr<Player> player = make_shared<Player>(pnt{0,0},0,0);
+    shared_ptr<Player> player = make_shared<Player>(pnt{0,0},10,2);
 
     vector<shared_ptr<MapObject>> objs;
     objs.push_back(player);
+    objs.push_back(make_shared<Monster>(Monster(pnt{2,1},1,1)));
+
     objs.push_back(make_shared<MapObject>(MapObject(pnt{0,0})));
     objs.push_back(make_shared<MapObject>(MapObject(pnt{0,1})));
     objs.push_back(make_shared<MapObject>(MapObject(pnt{0,2})));
@@ -57,6 +59,14 @@ int main()
                 break;
             }
         }
+        for (int i = 0; i < cells.size(); i++){
+            for (int j = 0; j < cells[i].size(); j++){
+                for (int z = 0; z < cells[i][j].size(); z++){
+                    cells[i][j][z]->move(*player);
+                }
+            }
+        }
+
     }
     endwin();
 

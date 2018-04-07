@@ -1,6 +1,6 @@
 #include "game_objects.h"
 
-void Character::move(const int xoffset, const int yoffset) {
+void MapObject::move(const int xoffset, const int yoffset) {
     if (position_.x + xoffset >=0){
         position_.x += xoffset;
     }

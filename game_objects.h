@@ -1,8 +1,12 @@
 #include <vector>
 #include <memory>
+#include <cstdlib>
+
 #ifndef ROG_GAMEOBJECTS_H
 #define ROG_GAMEOBJECTS_H
 #endif //ROG_GAMEOBJECTS_H
+#define SGN(x) ((x > 0) - (x < 0))
+
 
 typedef struct Point {
     int x, y;
@@ -11,6 +15,7 @@ typedef struct Point {
 using namespace std;
 
 class Map;
+class Player;
 
 class MapObject{
 protected:
@@ -31,15 +36,28 @@ public:
     char get_image() const{
         return image_;
     }
+    virtual void move(const int xoffset, const int yoffset);
+    virtual void move(Player& player){};
 };
 
-class Character: public MapObject{
+class Obstacle: public MapObject{
+public:
+    explicit Obstacle( pnt position, char image = '*'): MapObject(position,image){
+    }
+};
+
+class Actor: public MapObject{
+public:
+    explicit Actor( pnt position, char image = '*'): MapObject(position,image){
+    }
+};
+
+class Character: public Actor{
 protected:
     int hp_;
     int damage_;
-
 public:
-    Character(pnt position, int hp, int damage, char image) : MapObject(position,image) {
+    Character(pnt position, int hp, int damage, char image) : Actor(position,image) {
         position_ = position;
         hp_ = hp;
         damage_ = damage;
@@ -60,13 +78,26 @@ public:
     void set_damage(int damage){
         damage_ = damage;
     }
-
-    void move(const int xoffset, const int yoffset);
 };
 
 class Player: public Character{
 public:
     Player(pnt position, int hp, int damage) : Character(position, hp, damage, 'P'){}
+};
+
+class Princess: public Character{
+public:
+    Princess(pnt position, int hp, int damage) : Character(position, hp, damage, '&'){}
+};
+
+class Monster: public Character{
+public:
+    Monster(pnt position, int hp, int damage) : Character(position, hp, damage, '#'){}
+    virtual void move(Player& player) override {
+        (rand() > RAND_MAX/2) ?
+                position_.x -= SGN(position_.x - player.get_position().x) :
+                position_.y -= SGN(position_.y - player.get_position().y);
+    };
 };
 
 class Map{
