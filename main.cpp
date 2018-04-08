@@ -46,23 +46,23 @@ int main()
         int key;
         while (key = getch()){
             if (key == 's'){
-                player->move(0,1);
+                player->move(*player, map, 0,1);
                 break;
             } else if (key == 'w'){
-                player->move(0,-1);
+                player->move(*player, map, 0,-1);
                 break;
             } else if (key == 'a'){
-                player->move(-1,0);
+                player->move(*player, map, -1,0);
                 break;
             } else if (key == 'd'){
-                player->move(1,0);
+                player->move(*player, map, 1,0);
                 break;
             }
         }
         for (int i = 0; i < cells.size(); i++){
             for (int j = 0; j < cells[i].size(); j++){
                 for (int z = 0; z < cells[i][j].size(); z++){
-                    cells[i][j][z]->move(*player);
+                    cells[i][j][z]->move(*player, map);
                 }
             }
         }

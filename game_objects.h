@@ -36,8 +36,7 @@ public:
     char get_image() const{
         return image_;
     }
-    virtual void move(const int xoffset, const int yoffset);
-    virtual void move(Player& player){};
+    virtual void move(Player& player, Map& map, const int xoffset = 0, const int yoffset = 0);
 };
 
 class Obstacle: public MapObject{
@@ -93,7 +92,7 @@ public:
 class Monster: public Character{
 public:
     Monster(pnt position, int hp, int damage) : Character(position, hp, damage, '#'){}
-    virtual void move(Player& player) override {
+    virtual void move(Player& player, Map& map, const int xoffset = 0, const int yoffset = 0) override {
         (rand() > RAND_MAX/2) ?
                 position_.x -= SGN(position_.x - player.get_position().x) :
                 position_.y -= SGN(position_.y - player.get_position().y);
@@ -116,6 +115,10 @@ public:
             pnt pos = objects[i]->get_position();
             cells[pos.y][pos.x].push_back(objects[i]);
         }
+    }
+
+    pnt getsize(){
+        return {sizex_,sizey_};
     }
 
     void add_to_cell(int x, int y, MapObject* object){
