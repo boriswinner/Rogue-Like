@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
 #include <cstdlib>
+#include <fstream>
 
 #ifndef ROG_GAMEOBJECTS_H
 #define ROG_GAMEOBJECTS_H
@@ -101,24 +102,62 @@ public:
 
 class Map{
 private:
-    const int sizex_,sizey_;
+    unsigned int sizex_,sizey_;
     vector<shared_ptr<MapObject>> objs;
     vector <vector <vector <shared_ptr<MapObject>>>> cells;
 public:
-    Map(const unsigned int sizex, const unsigned int sizey, vector<shared_ptr<MapObject>> &objects): sizex_(sizex), sizey_(sizey){
-        cells.resize(sizey);
-        //vector <vector <vector <shared_ptr<MapObject>>>> cells = vector <vector <vector <shared_ptr<MapObject>>>>(sizex);
-        for (int i = 0; i < sizey; ++i){
-            cells[i].resize(sizex);
+    shared_ptr<Player> player;
+public:
+    Map(const string &filename){
+        read_objects_from_file(filename);
+        cells.resize(sizey_);
+        for (int i = 0; i < sizey_; ++i){
+            cells[i].resize(sizex_);
         }
-        for (int i = 0; i < objects.size(); ++i){
-            pnt pos = objects[i]->get_position();
-            cells[pos.y][pos.x].push_back(objects[i]);
+        recontruct();
+    }
+
+    void recontruct() {
+        for (int i = 0; i < sizey_; ++i){
+            for (int j = 0; j < sizex_; ++j){
+                cells[i][j].clear();
+            }
+        }
+        for (int i = 0; i < objs.size(); ++i) {
+            pnt pos = objs[i]->get_position();
+            cells[pos.y][pos.x].push_back(objs[i]);
         }
     }
 
     pnt getsize(){
         return {sizex_,sizey_};
+    }
+
+    pnt setsize(unsigned int sizex, unsigned int sizey){
+        sizex_ = sizex;
+        sizey_ = sizey;
+    }
+
+    void read_objects_from_file(const string &filename){
+        ifstream map_file;
+        map_file.open(filename);
+        unsigned int size, mapsize_x, mapsize_y;
+        map_file >> size >> mapsize_x >> mapsize_y;
+        objs.reserve(size);
+        setsize(mapsize_x,mapsize_y);
+        char symbol = '*';
+        int damage, hp, x = 0, y = 0;
+        for (int i = 0; i < size; ++i){
+            map_file >> symbol >> x >> y >> damage >> hp;
+            if (symbol == '*'){
+                objs.push_back(make_shared<MapObject>(MapObject(pnt{x,y})));
+            } else if (symbol == 'P'){
+                player = make_shared<Player>(pnt{x,y},hp,damage);
+                objs.push_back(player);
+            } else if (symbol == '#'){
+                objs.push_back(make_shared<Monster>(pnt{x,y},hp,damage));
+            }
+        }
     }
 
     void add_to_cell(int x, int y, MapObject* object){
