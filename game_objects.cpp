@@ -18,7 +18,7 @@ void Monster::move(Player &player, Map &map, const int xoffset, const int yoffse
 void Map::read_objects_from_file(const string &filename) {
     ifstream map_file;
     map_file.open(filename);
-    unsigned int size, mapsize_x, mapsize_y;
+    int size, mapsize_x, mapsize_y;
     map_file >> size >> mapsize_x >> mapsize_y;
     objs.reserve(size);
     setsize(mapsize_x, mapsize_y);

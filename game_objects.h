@@ -6,7 +6,7 @@
 #ifndef ROG_GAMEOBJECTS_H
 #define ROG_GAMEOBJECTS_H
 #endif //ROG_GAMEOBJECTS_H
-#define SGN(x) ((x > 0) - (x < 0))
+#define SGN(x) (((x) > 0) - ((x) < 0))
 
 
 typedef struct Point {
@@ -101,7 +101,7 @@ public:
 
 class Map {
 private:
-    unsigned int sizex_, sizey_;
+    int sizex_, sizey_;
     vector<shared_ptr<MapObject>> objs;
     vector<vector<vector<shared_ptr<MapObject>>>> cells;
 public:
@@ -115,7 +115,7 @@ public:
         return {sizex_, sizey_};
     }
 
-    pnt setsize(unsigned int sizex, unsigned int sizey) {
+    pnt setsize( int sizex,  int sizey) {
         sizex_ = sizex;
         sizey_ = sizey;
     }

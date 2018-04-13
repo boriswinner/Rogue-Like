@@ -14,6 +14,7 @@ int main() {
     initscr();
     raw();
     noecho();
+    curs_set(0);
 
     while (true) {
         clear();
