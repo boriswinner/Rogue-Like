@@ -1,6 +1,7 @@
 #include "game_objects.h"
 
 void MapObject::move(Player &player, Map &map, const int xoffset, const int yoffset) {
+    previous_position_ = position_;
     if ((position_.x + xoffset >= 0) && (position_.x + xoffset < map.getsize().x)) {
         position_.x += xoffset;
     }
@@ -33,6 +34,8 @@ void Map::read_objects_from_file(const string &filename) {
             objs.push_back(player);
         } else if (symbol == '#') {
             objs.push_back(make_shared<Monster>(pnt{x, y}, hp, damage));
+        } else if (symbol == '&') {
+            objs.push_back(make_shared<Wall>(pnt{x, y}));
         }
     }
 }

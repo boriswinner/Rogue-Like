@@ -3,9 +3,7 @@
 #include <cstdlib>
 #include <fstream>
 
-#ifndef ROG_GAMEOBJECTS_H
-#define ROG_GAMEOBJECTS_H
-#endif //ROG_GAMEOBJECTS_H
+#pragma once
 #define SGN(x) (((x) > 0) - ((x) < 0))
 
 
@@ -22,9 +20,10 @@ class Player;
 class MapObject {
 protected:
     pnt position_;
+    pnt previous_position_;
     const char image_;
 public:
-    explicit MapObject(pnt position, char image = '*') : image_(image), position_(position) {
+    explicit MapObject(pnt position, char image = '*') : image_(image), position_(position), previous_position_(pnt{0,0}) {
     }
 
     pnt get_position() const {
@@ -40,11 +39,21 @@ public:
     }
 
     virtual void move(Player &player, Map &map, const int xoffset = 0, const int yoffset = 0);
+
+    void move_back(){
+        position_ = previous_position_;
+    }
 };
 
 class Obstacle : public MapObject {
 public:
     explicit Obstacle(pnt position, char image = '*') : MapObject(position, image) {
+    }
+};
+
+class Wall : public Obstacle{
+public:
+    explicit Wall(pnt position, char image = '&') : Obstacle(position, image) {
     }
 };
 
@@ -96,7 +105,7 @@ class Monster : public Character {
 public:
     Monster(pnt position, int hp, int damage) : Character(position, hp, damage, '#') {}
 
-    void move(Player &player, Map &map, const int xoffset = 0, const int yoffset = 0) override;;
+    void move(Player &player, Map &map, const int xoffset = 0, const int yoffset = 0) override;
 };
 
 class Map {
