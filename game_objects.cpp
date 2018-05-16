@@ -1,6 +1,6 @@
 #include "game_objects.h"
 
-void MapObject::move(Player &player, Map &map, const int xoffset, const int yoffset) {
+void MapObject::move(Player &player, Map &map, int xoffset, int yoffset) {
     previous_position_ = position_;
     if ((position_.x + xoffset >= 0) && (position_.x + xoffset < map.getsize().x)) {
         position_.x += xoffset;
@@ -10,7 +10,7 @@ void MapObject::move(Player &player, Map &map, const int xoffset, const int yoff
     }
 }
 
-void Monster::move(Player &player, Map &map, const int xoffset, const int yoffset) {
+void Monster::move(Player &player, Map &map, int xoffset, int yoffset) {
     (rand() > RAND_MAX / 2) ?
             position_.x -= SGN(position_.x - player.get_position().x) :
             position_.y -= SGN(position_.y - player.get_position().y);

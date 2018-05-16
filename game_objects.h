@@ -38,7 +38,7 @@ public:
         return image_;
     }
 
-    virtual void move(Player &player, Map &map, const int xoffset = 0, const int yoffset = 0);
+    virtual void move(Player &player, Map &map, int xoffset = 0, int yoffset = 0);
 
     void move_back(){
         position_ = previous_position_;
@@ -105,7 +105,7 @@ class Monster : public Character {
 public:
     Monster(pnt position, int hp, int damage) : Character(position, hp, damage, '#') {}
 
-    void move(Player &player, Map &map, const int xoffset = 0, const int yoffset = 0) override;
+    void move(Player &player, Map &map, int xoffset = 0, int yoffset = 0) override;
 };
 
 class Map {
@@ -120,11 +120,11 @@ public:
 
     void recontruct();
 
-    pnt getsize() {
+    pnt getsize() const {
         return {sizex_, sizey_};
     }
 
-    pnt setsize( int sizex,  int sizey) {
+    void setsize(int sizex, int sizey) {
         sizex_ = sizex;
         sizey_ = sizey;
     }
@@ -136,7 +136,7 @@ public:
         //cells[x][y].push_back(object);
     }
 
-    vector<vector<vector<shared_ptr<MapObject>>>> &get_map() {
+    vector<vector<vector<shared_ptr<MapObject>>>> &get_map() const {
         return cells;
     }
 };
