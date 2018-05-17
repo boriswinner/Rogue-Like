@@ -136,7 +136,7 @@ public:
         //cells[x][y].push_back(object);
     }
 
-    vector<vector<vector<shared_ptr<MapObject>>>> &get_map() const {
+    vector<vector<vector<shared_ptr<MapObject>>>> &get_map() {
         return cells;
     }
 };
