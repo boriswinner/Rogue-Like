@@ -1,6 +1,6 @@
 #include "game_objects.h"
 
-void MapObject::move(Player &player, Map &map, int xoffset, int yoffset) {
+void MapObject::move(Map &map, int xoffset, int yoffset) {
     previous_position_ = position_;
     if ((position_.x + xoffset >= 0) && (position_.x + xoffset < map.getsize().x)) {
         position_.x += xoffset;
@@ -59,4 +59,14 @@ Map::Map(const string &filename) {
         cells[i].resize(sizex_);
     }
     recontruct();
+}
+
+void Wall::collide(Player &that) {
+    that.collide(*this);
+}
+
+void Player::collide(Wall &that) {
+    if (that.get_position() == this->get_position()){
+        this->move_back();
+    }
 }

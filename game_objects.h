@@ -9,13 +9,18 @@
 
 typedef struct Point {
     int x, y;
+
+    bool operator==(const Point& that){
+        return (this->x == that.x && this->y == that.y);
+    }
 } pnt;
 
 using namespace std;
 
 class Map;
-
 class Player;
+class Wall;
+class Monster;
 
 class MapObject {
 protected:
@@ -38,10 +43,24 @@ public:
         return image_;
     }
 
-    virtual void move(Player &player, Map &map, int xoffset = 0, int yoffset = 0);
+    virtual void move(Map &map, int xoffset = 0, int yoffset = 0);
+    virtual void move(Player &player, Map &map, int xoffset = 0, int yoffset = 0){};
 
     void move_back(){
         position_ = previous_position_;
+    }
+
+    virtual void collide(MapObject& that){
+        return;
+    }
+    virtual void collide(Player& that){
+        return;
+    }
+    virtual void collide(Wall& that){
+        return;
+    }
+    virtual void collide(Monster& that){
+        return;
     }
 };
 
@@ -55,6 +74,8 @@ class Wall : public Obstacle{
 public:
     explicit Wall(pnt position, char image = '&') : Obstacle(position, image) {
     }
+
+    void collide(Player& that) override;
 };
 
 class Actor : public MapObject {
@@ -94,6 +115,8 @@ public:
 class Player : public Character {
 public:
     Player(pnt position, int hp, int damage) : Character(position, hp, damage, 'P') {}
+
+    void collide(Wall& that) override;
 };
 
 class Princess : public Character {
