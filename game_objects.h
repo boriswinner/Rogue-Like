@@ -50,24 +50,21 @@ public:
         position_ = previous_position_;
     }
 
-    virtual void collide(MapObject& that){
-        return;
-    }
-    virtual void collide(Player& that){
-        return;
-    }
-    virtual void collide(Wall& that){
-        return;
-    }
-    virtual void collide(Monster& that){
-        return;
-    }
+    virtual void collide(MapObject& that) = 0;
+    virtual void collide(Player& that) {};
+    virtual void collide(Wall& that) {};
+    virtual void collide(Monster& that) {};
 };
 
 class Obstacle : public MapObject {
 public:
     explicit Obstacle(pnt position, char image = '*') : MapObject(position, image) {
     }
+
+    void collide(MapObject& that) override {};
+    void collide(Player& that) override {};
+    void collide(Wall& that) override {};
+    void collide(Monster& that) override {};
 };
 
 class Wall : public Obstacle{
@@ -75,13 +72,21 @@ public:
     explicit Wall(pnt position, char image = '&') : Obstacle(position, image) {
     }
 
+    void collide(MapObject& that) override {};
     void collide(Player& that) override;
+    void collide(Wall& that) override {};
+    void collide(Monster& that) override {};
 };
 
 class Actor : public MapObject {
 public:
     explicit Actor(pnt position, char image = '*') : MapObject(position, image) {
     }
+
+    void collide(MapObject& that) override {};
+    void collide(Player& that) override {};
+    void collide(Wall& that) override {};
+    void collide(Monster& that) override {};
 };
 
 class Character : public Actor {
@@ -110,18 +115,31 @@ public:
     void set_damage(int damage) {
         damage_ = damage;
     }
+
+    void collide(MapObject& that) override {};
+    void collide(Player& that) override {};
+    void collide(Wall& that) override {};
+    void collide(Monster& that) override {};
 };
 
 class Player : public Character {
 public:
     Player(pnt position, int hp, int damage) : Character(position, hp, damage, 'P') {}
 
+    void collide(MapObject& that) override {};
+    void collide(Player& that) override {};
     void collide(Wall& that) override;
+    void collide(Monster& that) override {};
 };
 
 class Princess : public Character {
 public:
     Princess(pnt position, int hp, int damage) : Character(position, hp, damage, '&') {}
+
+    void collide(MapObject& that) override {};
+    void collide(Player& that) override {};
+    void collide(Wall& that) override {};
+    void collide(Monster& that) override {};
 };
 
 class Monster : public Character {
@@ -129,6 +147,11 @@ public:
     Monster(pnt position, int hp, int damage) : Character(position, hp, damage, '#') {}
 
     void move(Player &player, Map &map, int xoffset = 0, int yoffset = 0) override;
+
+    void collide(MapObject& that) override {};
+    void collide(Player& that) override {};
+    void collide(Wall& that) override {};
+    void collide(Monster& that) override {};
 };
 
 class Map {
