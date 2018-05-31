@@ -1,13 +1,9 @@
 #include "curses.h"
 #include "game_objects.h"
-#include <vector>
-#include <memory>
-#include <iostream>
 
 int main() {
 
     Map map("level1.txt");
-
 
     initscr();
     raw();
@@ -27,32 +23,27 @@ int main() {
             addch('\n');
         }
         char player_hp[15] = "Player HP: ";
-        itoa(map.player->get_hp(),player_hp+11,10); //11 is player_hp length
-        mvprintw(LINES-1,1,player_hp);
-        if (map.player->get_hp() <= 0){
-            mvprintw(LINES-1,1,"GAME OVER! PRESS R TO RESET");
+        itoa(map.player->get_hp(), player_hp + 11, 10); //11 is player_hp length
+        mvprintw(LINES - 1, 1, player_hp);
+        if (map.player->get_hp() <= 0) {
+            mvprintw(LINES - 1, 1, "GAME OVER! PRESS R TO RESET");
         }
         refresh();
-        int key;
-        while (key = getch()) {
-            if (key == 's') {
-                map.player->move(map, 0, 1);
-                break;
-            } else if (key == 'w') {
-                map.player->move(map, 0, -1);
-                break;
-            } else if (key == 'a') {
-                map.player->move(map, -1, 0);
-                break;
-            } else if (key == 'd') {
-                map.player->move(map, 1, 0);
-                break;
-            }
+        int key = getch();
+        if (key == 's') {
+            map.player->move(map, 0, 1);
+        } else if (key == 'w') {
+            map.player->move(map, 0, -1);
+        } else if (key == 'a') {
+            map.player->move(map, -1, 0);
+        } else if (key == 'd') {
+            map.player->move(map, 1, 0);
         }
+
         for (int i = 0; i < cells.size(); i++) {
             for (int j = 0; j < cells[i].size(); j++) {
                 for (int z = 0; z < cells[i][j].size(); z++) {
-                   cells[i][j][z]->move(*map.player, map);
+                    cells[i][j][z]->move(*map.player, map);
                 }
             }
         }
@@ -60,15 +51,14 @@ int main() {
         for (int i = 0; i < cells.size(); i++) {
             for (int j = 0; j < cells[i].size(); j++) {
                 for (int z = 0; z < cells[i][j].size(); z++) {
-                    if (z < cells[i][j].size() - 1){
-                        for (int f = z+1; f < cells[i][j].size(); ++f){
+                    if (z < cells[i][j].size() - 1) {
+                        for (int f = z + 1; f < cells[i][j].size(); ++f) {
                             cells[i][j][z]->collide(*cells[i][j][f]);
                         }
                     }
                 }
             }
         }
-
     }
     endwin();
 

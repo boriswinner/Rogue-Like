@@ -10,8 +10,8 @@ void MapObject::move(Map &map, int xoffset, int yoffset) {
     }
 }
 
-void Monster::move(Player &player, Map &map, int xoffset, int yoffset) {
-    MapObject::move(map,xoffset,yoffset);
+void Monster::move(Player &player, Map &map, int xoffset, int yoffset) { //карту по константной ссылке
+    MapObject::move(map, xoffset, yoffset);
     (rand() > RAND_MAX / 2) ?
             position_.x -= SGN(position_.x - player.get_position().x) :
             position_.y -= SGN(position_.y - player.get_position().y);
@@ -26,12 +26,14 @@ void Monster::collide(Player &that) {
 }
 
 void Monster::collide(Wall &that) {
-    if (that.get_position() == this->get_position()) {
-        this->move_back();
-    }
+    this->move_back();
 }
 
 void Monster::collide(Monster &that) {
+}
+
+void Monster::collide(Healer &that) {
+    Character::collide(that);
 }
 
 void Map::read_objects_from_file(const string &filename) {
@@ -46,14 +48,16 @@ void Map::read_objects_from_file(const string &filename) {
     for (int i = 0; i < size; ++i) {
         map_file >> symbol >> x >> y >> damage >> hp;
         if (symbol == '*') {
-            objs.push_back(make_shared<Obstacle>(Obstacle(pnt{x, y})));
+            objs.push_back(make_shared<Obstacle>(Obstacle(pnt{x, y},'*')));
         } else if (symbol == 'P') {
-            player = make_shared<Player>(pnt{x, y}, hp, damage);
+            player = make_shared<Player>(pnt{x, y}, hp, damage,'P');
             objs.push_back(player);
         } else if (symbol == '#') {
-            objs.push_back(make_shared<Monster>(pnt{x, y}, hp, damage));
+            objs.push_back(make_shared<Monster>(pnt{x, y}, hp, damage,'#'));
         } else if (symbol == '&') {
-            objs.push_back(make_shared<Wall>(pnt{x, y}));
+            objs.push_back(make_shared<Wall>(pnt{x, y},'&'));
+        } else if (symbol == '@') {
+            objs.push_back(make_shared<Healer>(pnt{x, y}, 10, '@'));
         }
     }
 }
@@ -65,7 +69,7 @@ void Map::recontruct() {
         }
     }
     for (int i = 0; i < objs.size(); ++i) {
-        if (objs[i]->exists()){
+        if (objs[i]->exists()) {
             pnt pos = objs[i]->get_position();
             cells[pos.y][pos.x].push_back(objs[i]);
         }
@@ -82,9 +86,7 @@ Map::Map(const string &filename) {
 }
 
 void Player::collide(Wall &that) {
-    if (that.get_position() == this->get_position()) {
-        this->move_back();
-    }
+    this->move_back();
 }
 
 void Player::collide(MapObject &that) {
@@ -97,12 +99,16 @@ void Player::collide(Player &that) {
 void Player::collide(Monster &that) {
     this->damage(that.get_damage());
     that.damage(this->get_damage());
-    if (that.get_hp() <= 0){
+    if (that.get_hp() <= 0) {
         that.remove();
     }
-    if (this->get_hp() <= 0){
+    if (this->get_hp() <= 0) {
         this->remove();
     }
+}
+
+void Player::collide(Healer &that) {
+    that.collide(*this);
 }
 
 void Obstacle::collide(Player &that) {
@@ -115,6 +121,10 @@ void Obstacle::collide(Monster &that) {
 }
 
 void Obstacle::collide(MapObject &that) {
+}
+
+void Obstacle::collide(Healer &that) {
+
 }
 
 void Wall::collide(MapObject &that) {
@@ -132,6 +142,10 @@ void Wall::collide(Player &that) {
     that.collide(*this);
 }
 
+void Wall::collide(Healer &that) {
+    Obstacle::collide(that);
+}
+
 void Actor::collide(MapObject &that) {
 }
 
@@ -142,6 +156,10 @@ void Actor::collide(Wall &that) {
 }
 
 void Actor::collide(Monster &that) {
+}
+
+void Actor::collide(Healer &that) {
+
 }
 
 void Character::collide(MapObject &that) {
@@ -156,6 +174,10 @@ void Character::collide(Wall &that) {
 void Character::collide(Monster &that) {
 }
 
+void Character::collide(Healer &that) {
+    Actor::collide(that);
+}
+
 void Princess::collide(MapObject &that) {
 }
 
@@ -166,4 +188,26 @@ void Princess::collide(Wall &that) {
 }
 
 void Princess::collide(Monster &that) {
+}
+
+void Princess::collide(Healer &that) {
+    Character::collide(that);
+}
+
+void Healer::collide(MapObject &that) {
+    that.collide(*this);
+}
+
+void Healer::collide(Player &that) {
+    that.heal(this->get_heal_value());
+    this->remove();
+}
+
+void Healer::collide(Healer &that) {
+}
+
+void Healer::collide(Wall &that) {
+}
+
+void Healer::collide(Monster &that) {
 }
