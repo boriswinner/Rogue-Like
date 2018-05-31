@@ -16,6 +16,18 @@ void Monster::move(Player &player, Map &map, int xoffset, int yoffset) {
             position_.y -= SGN(position_.y - player.get_position().y);
 }
 
+void Monster::collide(MapObject &that) {
+}
+
+void Monster::collide(Player &that) {
+}
+
+void Monster::collide(Wall &that) {
+}
+
+void Monster::collide(Monster &that) {
+}
+
 void Map::read_objects_from_file(const string &filename) {
     ifstream map_file;
     map_file.open(filename);
@@ -28,7 +40,7 @@ void Map::read_objects_from_file(const string &filename) {
     for (int i = 0; i < size; ++i) {
         map_file >> symbol >> x >> y >> damage >> hp;
         if (symbol == '*') {
-            objs.push_back(make_shared<MapObject>(MapObject(pnt{x, y})));
+            objs.push_back(make_shared<Obstacle>(Obstacle(pnt{x, y})));
         } else if (symbol == 'P') {
             player = make_shared<Player>(pnt{x, y}, hp, damage);
             objs.push_back(player);
@@ -69,4 +81,71 @@ void Player::collide(Wall &that) {
     if (that.get_position() == this->get_position()){
         this->move_back();
     }
+}
+
+void Player::collide(MapObject &that) {
+    that.collide(*this);
+}
+
+void Player::collide(Player &that) {
+}
+
+void Player::collide(Monster &that) {
+}
+
+void Obstacle::collide(Player &that) {
+}
+
+void Obstacle::collide(Wall &that) {
+}
+
+void Obstacle::collide(Monster &that) {
+}
+
+void Obstacle::collide(MapObject &that) {
+}
+
+void Wall::collide(MapObject &that) {
+}
+
+void Wall::collide(Wall &that) {
+}
+
+void Wall::collide(Monster &that) {
+}
+
+void Actor::collide(MapObject &that) {
+}
+
+void Actor::collide(Player &that) {
+}
+
+void Actor::collide(Wall &that) {
+}
+
+void Actor::collide(Monster &that) {
+}
+
+void Character::collide(MapObject &that) {
+}
+
+void Character::collide(Player &that) {
+}
+
+void Character::collide(Wall &that) {
+}
+
+void Character::collide(Monster &that) {
+}
+
+void Princess::collide(MapObject &that) {
+}
+
+void Princess::collide(Player &that) {
+}
+
+void Princess::collide(Wall &that) {
+}
+
+void Princess::collide(Monster &that) {
 }

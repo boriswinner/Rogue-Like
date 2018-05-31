@@ -55,8 +55,9 @@ int main() {
             for (int j = 0; j < cells[i].size(); j++) {
                 for (int z = 0; z < cells[i][j].size(); z++) {
                     if (z < cells[i][j].size() - 1){
-                        cells[i][j][z]->collide(*cells[i][j][z+1]);
-                        break;
+                        for (int f = z+1; f < cells[i][j].size(); ++f){
+                            cells[i][j][z]->collide(*cells[i][j][f]);
+                        }
                     }
                 }
             }
