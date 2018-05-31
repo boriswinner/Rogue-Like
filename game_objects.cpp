@@ -11,18 +11,24 @@ void MapObject::move(Map &map, int xoffset, int yoffset) {
 }
 
 void Monster::move(Player &player, Map &map, int xoffset, int yoffset) {
+    MapObject::move(map,xoffset,yoffset);
     (rand() > RAND_MAX / 2) ?
             position_.x -= SGN(position_.x - player.get_position().x) :
             position_.y -= SGN(position_.y - player.get_position().y);
 }
 
 void Monster::collide(MapObject &that) {
+    that.collide(*this);
 }
 
 void Monster::collide(Player &that) {
+    that.collide(*this);
 }
 
 void Monster::collide(Wall &that) {
+    if (that.get_position() == this->get_position()) {
+        this->move_back();
+    }
 }
 
 void Monster::collide(Monster &that) {
@@ -73,12 +79,8 @@ Map::Map(const string &filename) {
     recontruct();
 }
 
-void Wall::collide(Player &that) {
-    that.collide(*this);
-}
-
 void Player::collide(Wall &that) {
-    if (that.get_position() == this->get_position()){
+    if (that.get_position() == this->get_position()) {
         this->move_back();
     }
 }
@@ -91,6 +93,8 @@ void Player::collide(Player &that) {
 }
 
 void Player::collide(Monster &that) {
+    this->damage(that.get_damage());
+    that.damage(this->get_damage());
 }
 
 void Obstacle::collide(Player &that) {
@@ -106,12 +110,18 @@ void Obstacle::collide(MapObject &that) {
 }
 
 void Wall::collide(MapObject &that) {
+    that.collide(*this);
 }
 
 void Wall::collide(Wall &that) {
 }
 
 void Wall::collide(Monster &that) {
+    that.collide(*this);
+}
+
+void Wall::collide(Player &that) {
+    that.collide(*this);
 }
 
 void Actor::collide(MapObject &that) {

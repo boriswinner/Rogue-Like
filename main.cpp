@@ -26,6 +26,9 @@ int main() {
             }
             addch('\n');
         }
+        char player_hp[15] = "Player HP: ";
+        itoa(map.player->get_hp(),player_hp+11,10); //11 is player_hp length
+        mvprintw(LINES-1,1,player_hp);
         refresh();
         int key;
         while (key = getch()) {

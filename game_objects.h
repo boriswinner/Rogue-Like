@@ -116,6 +116,10 @@ public:
         damage_ = damage;
     }
 
+    void damage(int damage){
+        this->hp_ -= damage;
+    }
+
     void collide(MapObject& that) override;
     void collide(Player& that) override;
     void collide(Wall& that) override;
