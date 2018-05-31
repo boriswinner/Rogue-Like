@@ -27,8 +27,10 @@ protected:
     pnt position_;
     pnt previous_position_;
     const char image_;
+    bool exists_;
 public:
-    explicit MapObject(pnt position, char image = '*') : image_(image), position_(position), previous_position_(pnt{0,0}) {
+    explicit MapObject(pnt position, char image = '*') : image_(image), position_(position),
+                                                         previous_position_(pnt{0,0}), exists_(true) {
     }
 
     pnt get_position() const {
@@ -48,6 +50,14 @@ public:
 
     void move_back(){
         position_ = previous_position_;
+    }
+
+    void remove(){
+        exists_ = false;
+    }
+
+    bool exists(){
+        return exists_;
     }
 
     virtual void collide(MapObject& that) = 0;

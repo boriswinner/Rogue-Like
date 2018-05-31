@@ -65,8 +65,10 @@ void Map::recontruct() {
         }
     }
     for (int i = 0; i < objs.size(); ++i) {
-        pnt pos = objs[i]->get_position();
-        cells[pos.y][pos.x].push_back(objs[i]);
+        if (objs[i]->exists()){
+            pnt pos = objs[i]->get_position();
+            cells[pos.y][pos.x].push_back(objs[i]);
+        }
     }
 }
 
@@ -95,6 +97,12 @@ void Player::collide(Player &that) {
 void Player::collide(Monster &that) {
     this->damage(that.get_damage());
     that.damage(this->get_damage());
+    if (that.get_hp() <= 0){
+        that.remove();
+    }
+    if (this->get_hp() <= 0){
+        this->remove();
+    }
 }
 
 void Obstacle::collide(Player &that) {
