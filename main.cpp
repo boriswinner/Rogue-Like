@@ -29,6 +29,9 @@ int main() {
         char player_hp[15] = "Player HP: ";
         itoa(map.player->get_hp(),player_hp+11,10); //11 is player_hp length
         mvprintw(LINES-1,1,player_hp);
+        if (map.player->get_hp() <= 0){
+            mvprintw(LINES-1,1,"GAME OVER! PRESS R TO RESET");
+        }
         refresh();
         int key;
         while (key = getch()) {
