@@ -2,19 +2,19 @@
 
 void MapObject::move(Map &map, int xoffset, int yoffset) {
     previous_position_ = position_;
-    if ((position_.x + xoffset >= 0) && (position_.x + xoffset < map.getsize().x)) {
+    //if ((position_.x + xoffset >= 0) && (position_.x + xoffset < map.getsize().x)) {
         position_.x += xoffset;
-    }
-    if ((position_.y + yoffset >= 0) && (position_.y + yoffset < map.getsize().y)) {
+    //}
+    //if ((position_.y + yoffset >= 0) && (position_.y + yoffset < map.getsize().y)) {
         position_.y += yoffset;
-    }
+    //}
 }
 
-void Monster::move(Player &player, Map &map, int xoffset, int yoffset) { //карту по константной ссылке
+void Monster::move(Map &map, int xoffset, int yoffset) { //карту по константной ссылке
     MapObject::move(map, xoffset, yoffset);
     (rand() > RAND_MAX / 2) ?
-            position_.x -= SGN(position_.x - player.get_position().x) :
-            position_.y -= SGN(position_.y - player.get_position().y);
+            position_.x -= SGN(position_.x - map.player->get_position().x) :
+            position_.y -= SGN(position_.y - map.player->get_position().y);
 }
 
 void Monster::collide(MapObject &that) {
@@ -48,7 +48,7 @@ void Map::read_objects_from_file(const string &filename) {
     for (int i = 0; i < size; ++i) {
         map_file >> symbol >> x >> y >> damage >> hp;
         if (symbol == '*') {
-            objs.push_back(make_shared<Obstacle>(Obstacle(pnt{x, y},'*')));
+            objs.push_back(make_shared<Floor>(Floor(pnt{x, y},'*')));
         } else if (symbol == 'P') {
             player = make_shared<Player>(pnt{x, y}, hp, damage,'P');
             objs.push_back(player);
@@ -111,19 +111,19 @@ void Player::collide(Healer &that) {
     that.collide(*this);
 }
 
-void Obstacle::collide(Player &that) {
+void Floor::collide(Player &that) {
 }
 
-void Obstacle::collide(Wall &that) {
+void Floor::collide(Wall &that) {
 }
 
-void Obstacle::collide(Monster &that) {
+void Floor::collide(Monster &that) {
 }
 
-void Obstacle::collide(MapObject &that) {
+void Floor::collide(MapObject &that) {
 }
 
-void Obstacle::collide(Healer &that) {
+void Floor::collide(Healer &that) {
 
 }
 

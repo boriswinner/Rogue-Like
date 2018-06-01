@@ -10,7 +10,7 @@
 typedef struct Point {
     int x, y;
 
-    bool operator==(const Point& that){
+    bool operator==(const Point &that) {
         return (this->x == that.x && this->y == that.y);
     }
 } pnt;
@@ -18,20 +18,19 @@ typedef struct Point {
 using namespace std;
 
 class Map;
+
 class Player;
+
 class Wall;
+
 class Monster;
+
 class Healer;
 
 class MapObject {
-protected:
-    pnt position_;
-    pnt previous_position_;
-    const char image_;
-    bool exists_;
 public:
     explicit MapObject(pnt position, char image) : image_(image), position_(position),
-                                                         previous_position_(pnt{0,0}), exists_(true) {}
+                                                   previous_position_(pnt{0, 0}), exists_(true) {}
 
     pnt get_position() const {
         return position_;
@@ -45,26 +44,35 @@ public:
         return image_;
     }
 
-    virtual void move(Map &map, int xoffset = 0, int yoffset = 0);
-    virtual void move(Player &player, Map &map, int xoffset = 0, int yoffset = 0){};
+    virtual void move(Map &map, int xoffset, int yoffset);
 
-    void move_back(){
+    void move_back() {
         position_ = previous_position_;
     }
 
-    void remove(){
+    void remove() {
         exists_ = false;
     }
 
-    bool exists(){
+    bool exists() {
         return exists_;
     }
 
-    virtual void collide(MapObject& that) = 0;
-    virtual void collide(Player& that) = 0;
-    virtual void collide(Wall& that) = 0;
-    virtual void collide(Monster& that) = 0;
-    virtual void collide(Healer& that) = 0;
+    virtual void collide(MapObject &that) = 0;
+
+    virtual void collide(Player &that) = 0;
+
+    virtual void collide(Wall &that) = 0;
+
+    virtual void collide(Monster &that) = 0;
+
+    virtual void collide(Healer &that) = 0;
+
+protected:
+    pnt position_;
+    pnt previous_position_;
+    const char image_;
+    bool exists_;
 };
 
 class Obstacle : public MapObject {
@@ -72,40 +80,69 @@ public:
     explicit Obstacle(pnt position, char image) : MapObject(position, image) {
     }
 
-    void collide(MapObject& that) override;
-    void collide(Player& that) override;
-    void collide(Wall& that) override;
-    void collide(Monster& that) override;
-    void collide(Healer& that) override;
+    void collide(MapObject &that) override{}
+
+    void collide(Player &that) override{}
+
+    void collide(Wall &that) override {}
+
+    void collide(Monster &that) override {}
+
+    void collide(Healer &that) override {}
 };
 
-class Wall : public Obstacle{
+class Floor : public Obstacle {
+public:
+    explicit Floor(pnt position, char image) : Obstacle(position, image) {
+    }
+    void collide(MapObject &that) override;
+
+    void collide(Player &that) override;
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override;
+
+};
+
+class Wall : public Obstacle {
 public:
     explicit Wall(pnt position, char image) : Obstacle(position, image) {
     }
 
-    void collide(MapObject& that) override;
-    void collide(Player& that) override;
-    void collide(Wall& that) override;
-    void collide(Monster& that) override;
-    void collide(Healer& that) override;
+    void collide(MapObject &that) override;
+
+    void collide(Player &that) override;
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override;
 };
 
-class Healer: public Obstacle{
+class Healer : public Obstacle {
 private:
     int healValue_;
 public:
-    explicit Healer(pnt position, int healValue, char image): Obstacle(position, image), healValue_(healValue){
+    explicit Healer(pnt position, int healValue, char image) : Obstacle(position, image), healValue_(healValue) {
     }
 
-    int get_heal_value() const{
+    int get_heal_value() const {
         return healValue_;
     }
-    void collide(MapObject& that) override;
-    void collide(Player& that) override;
-    void collide(Wall& that) override;
-    void collide(Monster& that) override;
-    void collide(Healer& that) override;
+
+    void collide(MapObject &that) override;
+
+    void collide(Player &that) override;
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override;
 };
 
 class Actor : public MapObject {
@@ -113,11 +150,15 @@ public:
     explicit Actor(pnt position, char image) : MapObject(position, image) {
     }
 
-    void collide(MapObject& that) override;
-    void collide(Player& that) override;
-    void collide(Wall& that) override;
-    void collide(Monster& that) override;
-    void collide(Healer& that) override;
+    void collide(MapObject &that) override;
+
+    void collide(Player &that) override;
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override;
 };
 
 class Character : public Actor {
@@ -139,7 +180,7 @@ public:
         hp_ = hp;
     }
 
-    void heal(int hp){
+    void heal(int hp) {
         hp_ += hp;
     }
 
@@ -151,15 +192,19 @@ public:
         damage_ = damage;
     }
 
-    void damage(int damage){
+    void damage(int damage) {
         this->hp_ -= damage;
     }
 
-    void collide(MapObject& that) override;
-    void collide(Player& that) override;
-    void collide(Wall& that) override;
-    void collide(Monster& that) override;
-    void collide(Healer& that) override;
+    void collide(MapObject &that) override;
+
+    void collide(Player &that) override;
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override;
 
 };
 
@@ -167,11 +212,15 @@ class Player : public Character {
 public:
     Player(pnt position, int hp, int damage, char image) : Character(position, hp, damage, image) {}
 
-    void collide(MapObject& that) override;
-    void collide(Player& that) override;
-    void collide(Wall& that) override;
-    void collide(Monster& that) override;
-    void collide(Healer& that) override;
+    void collide(MapObject &that) override;
+
+    void collide(Player &that) override;
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override;
 
 };
 
@@ -179,24 +228,32 @@ class Princess : public Character {
 public:
     Princess(pnt position, int hp, int damage, char image) : Character(position, hp, damage, image) {}
 
-    void collide(MapObject& that) override;
-    void collide(Player& that) override;
-    void collide(Wall& that) override;
-    void collide(Monster& that) override;
-    void collide(Healer& that) override;
+    void collide(MapObject &that) override;
+
+    void collide(Player &that) override;
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override;
 };
 
 class Monster : public Character {
 public:
     Monster(pnt position, int hp, int damage, char image) : Character(position, hp, damage, image) {}
 
-    void move(Player &player, Map &map, int xoffset = 0, int yoffset = 0) override;
+    void move(Map &map, int xoffset = 0, int yoffset = 0) override;
 
-    void collide(MapObject& that) override;
-    void collide(Player& that) override;
-    void collide(Wall& that) override;
-    void collide(Monster& that) override;
-    void collide(Healer& that) override;
+    void collide(MapObject &that) override;
+
+    void collide(Player &that) override;
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override;
 };
 
 class Map {
@@ -221,11 +278,6 @@ public:
     }
 
     void read_objects_from_file(const string &filename);
-
-    void add_to_cell(int x, int y, MapObject *object) {
-        //cells[x][y].erase(cells[x][y].begin(),cells[x][y].end());
-        //cells[x][y].push_back(object);
-    }
 
     vector<vector<vector<shared_ptr<MapObject>>>> &get_map() {
         return cells;

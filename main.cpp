@@ -43,7 +43,7 @@ int main() {
         for (int i = 0; i < cells.size(); i++) {
             for (int j = 0; j < cells[i].size(); j++) {
                 for (int z = 0; z < cells[i][j].size(); z++) {
-                    cells[i][j][z]->move(*map.player, map);
+                    cells[i][j][z]->move(map, 0, 0);
                 }
             }
         }
