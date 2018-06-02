@@ -12,6 +12,13 @@ public:
     void make_move(){
         map_.recontruct();
         draw_map();
+        for (int i = 0; i < cells_.size(); i++) {
+            for (int j = 0; j < cells_[i].size(); j++) {
+                for (int z = 0; z < cells_[i][j].size(); z++) {
+                    cells_[i][j][z]->move(map_, 0, 0);
+                }
+            }
+        }
         int key = getch();
         if (key == 's') {
             map_.player->move(map_, 0, 1);
@@ -21,14 +28,6 @@ public:
             map_.player->move(map_, -1, 0);
         } else if (key == 'd') {
             map_.player->move(map_, 1, 0);
-        }
-
-        for (int i = 0; i < cells_.size(); i++) {
-            for (int j = 0; j < cells_[i].size(); j++) {
-                for (int z = 0; z < cells_[i][j].size(); z++) {
-                    cells_[i][j][z]->move(map_, 0, 0);
-                }
-            }
         }
         map_.recontruct();
         for (int i = 0; i < cells_.size(); i++) {
