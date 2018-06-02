@@ -3,7 +3,11 @@
 
 class GameManager{
 public:
-    explicit GameManager(const string &mapfilename): map_(mapfilename), cells_(map_.get_map()){}
+    explicit GameManager(const string &mapfilename): map_(mapfilename), cells_(map_.get_map()), isrunning_(true){}
+
+    bool is_running(){
+        return isrunning_;
+    }
 
     void start_game(){
         init_curses();
@@ -43,12 +47,18 @@ public:
         }
     }
 
-    void start_mapeditor(){
-
+    void end_game(){
+        endwin();
     }
+
+    void start_mapeditor(){
+        init_curses();
+    }
+
 protected:
     Map map_;
     vector<vector<vector<shared_ptr<MapObject>>>> &cells_;
+    bool isrunning_;
 
     void init_curses(){
         initscr();
@@ -66,9 +76,6 @@ protected:
         }
     }
 
-    void get_input(){
-
-    }
     void draw_map(){
         clear();
         refresh();

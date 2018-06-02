@@ -1,16 +1,17 @@
 #include "game_objects.h"
 
-void MapObject::move(Map &map, int xoffset, int yoffset) {
+void MapObject::move(const Map &map, int xoffset, int yoffset) {
     previous_position_ = position_;
-    //if ((position_.x + xoffset >= 0) && (position_.x + xoffset < map.getsize().x)) {
+    //does MapObject really need to know map borders?
+    if ((position_.x + xoffset >= 0) && (position_.x + xoffset < map.getsize().x)) {
         position_.x += xoffset;
-    //}
-    //if ((position_.y + yoffset >= 0) && (position_.y + yoffset < map.getsize().y)) {
+    }
+    if ((position_.y + yoffset >= 0) && (position_.y + yoffset < map.getsize().y)) {
         position_.y += yoffset;
-    //}
+    }
 }
 
-void Monster::move(Map &map, int xoffset, int yoffset) { //карту по константной ссылке
+void Monster::move(const Map &map, int xoffset, int yoffset) {
     MapObject::move(map, xoffset, yoffset);
     (rand() > RAND_MAX / 2) ?
             position_.x -= SGN(position_.x - map.player->get_position().x) :
@@ -52,10 +53,10 @@ void Map::read_objects_from_file(const string &filename) {
         } else if (symbol == 'P') {
             player = make_shared<Player>(pnt{x, y}, hp, damage,'P');
             objs.push_back(player);
-        } else if (symbol == '#') {
-            objs.push_back(make_shared<Monster>(pnt{x, y}, hp, damage,'#'));
         } else if (symbol == '&') {
-            objs.push_back(make_shared<Wall>(pnt{x, y},'&'));
+            objs.push_back(make_shared<Monster>(pnt{x, y}, hp, damage,'&'));
+        } else if (symbol == '#') {
+            objs.push_back(make_shared<Wall>(pnt{x, y},'#'));
         } else if (symbol == '@') {
             objs.push_back(make_shared<Healer>(pnt{x, y}, 10, '@'));
         }

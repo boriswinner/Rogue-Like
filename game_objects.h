@@ -44,7 +44,7 @@ public:
         return image_;
     }
 
-    virtual void move(Map &map, int xoffset, int yoffset);
+    virtual void move(const Map &map, int xoffset, int yoffset);
 
     void move_back() {
         position_ = previous_position_;
@@ -243,7 +243,7 @@ class Monster : public Character {
 public:
     Monster(pnt position, int hp, int damage, char image) : Character(position, hp, damage, image) {}
 
-    void move(Map &map, int xoffset = 0, int yoffset = 0) override;
+    void move(const Map &map, int xoffset = 0, int yoffset = 0) override;
 
     void collide(MapObject &that) override;
 

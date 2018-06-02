@@ -8,11 +8,11 @@ with open ('output.txt','w') as fout:
                     if (random.randint(1,7) > 6):
                         print('*', i, j, 0, 0, file=fout)
                     else:
-                        print('&', i, j, 0, 0, file=fout)
+                        print('#', i, j, 0, 0, file=fout)
                 else:
                     print('*', i, j, 0, 0, file=fout)
             else:
                 if (random.randint(1, 7) > 6):
-                    print('&', i, j, 0, 0, file=fout)
+                    print('#', i, j, 0, 0, file=fout)
                 else:
                     print('*', i, j, 0, 0, file=fout)
