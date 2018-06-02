@@ -72,10 +72,9 @@ protected:
     void draw_map(){
         clear();
         refresh();
-        vector<vector<vector<shared_ptr<MapObject>>>> &cells = map_.get_map();
-        for (int i = 0; i < cells.size(); i++) {
-            for (int j = 0; j < cells[i].size(); j++) {
-                addch(static_cast<const chtype>(cells[i][j][0]->get_image()));
+        for (int i = 0; i < cells_.size(); i++) {
+            for (int j = 0; j < cells_[i].size(); j++) {
+                addch(static_cast<const chtype>(cells_[i][j][0]->get_image()));
             }
             addch('\n');
         }
