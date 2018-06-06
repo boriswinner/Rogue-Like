@@ -290,4 +290,8 @@ public:
     vector<vector<vector<shared_ptr<MapObject>>>> &get_map() {
         return cells;
     }
+
+    int objs_count(){
+        return objs_.size();
+    }
 };
