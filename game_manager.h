@@ -13,7 +13,7 @@ public:
         init_curses();
     }
 
-    void make_move() {
+    virtual void make_move() {
         map_.recontruct();
         draw_map();
         for (int i = 0; i < cells_.size(); i++) {
@@ -23,7 +23,8 @@ public:
                 }
             }
         }
-        move_player();
+        int key = getch();
+        check_keys(key);
         map_.recontruct();
         for (int i = 0; i < cells_.size(); i++) {
             for (int j = 0; j < cells_[i].size(); j++) {
@@ -38,8 +39,7 @@ public:
         }
     }
 
-    void move_player() const {
-        int key = getch();
+    virtual void check_keys(int key) {
         if (key == 's') {
             map_.player->move(map_, 0, 1);
         } else if (key == 'w') {
@@ -53,33 +53,6 @@ public:
 
     void end_game() {
         endwin();
-    }
-
-    void start_mapeditor() {
-        init_curses();
-    }
-
-    void makemove_mapeditor() {
-        map_.recontruct();
-        draw_map();
-        int key = getch();
-        if (key == 's') {
-            map_.player->move(map_, 0, 1);
-        } else if (key == 'w') {
-            map_.player->move(map_, 0, -1);
-        } else if (key == 'a') {
-            map_.player->move(map_, -1, 0);
-        } else if (key == 'd') {
-            map_.player->move(map_, 1, 0);
-        } else if (key == '1') {
-            for (int i = 0; i < cells_[map_.player->get_position().y][map_.player->get_position().x].size(); ++i) {
-                cells_[map_.player->get_position().y][map_.player->get_position().x][i]->remove();
-            }
-            map_.player->deremove();
-            map_.add_object(make_shared<Wall>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '#'));
-            map_.add_object(make_shared<Floor>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '*'));
-        }
-        map_.recontruct();
     }
 
 protected:
@@ -98,7 +71,7 @@ protected:
         init_pair(3, COLOR_BLACK, COLOR_GREEN);
     }
 
-    void draw_hp() {
+    virtual void draw_ui() {
         char player_hp[15] = "Player HP: ";
         itoa(map_.player->get_hp(), player_hp + 11, 10); //11 is player_hp length
         mvprintw(LINES - 1, 1, player_hp);
@@ -107,15 +80,7 @@ protected:
         }
     }
 
-    void draw_editor_ui() {
-        attron(COLOR_PAIR(2));
-        mvprintw(1, map_.getsize().x + 1, "P is cursor");
-        attron(COLOR_PAIR(3));
-        mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer");
-        attron(COLOR_PAIR(1));
-    }
-
-    void draw_map() {
+    virtual void draw_map() {
         clear();
         refresh();
         for (int i = 0; i < cells_.size(); i++) {
@@ -124,6 +89,42 @@ protected:
             }
             addch('\n');
         }
-        draw_editor_ui();
+        draw_ui();
     }
+};
+
+class MapEditor: public GameManager{
+public:
+    explicit MapEditor(const string &mapfilename) : GameManager(mapfilename) {}
+
+    void make_move() override {
+        map_.recontruct();
+        draw_map();
+        int key = getch();
+        check_keys(key);
+        map_.recontruct();
+    }
+
+protected:
+
+    void check_keys(int key) override {
+        GameManager::check_keys(key);
+        if (key == '1') {
+            for (int i = 0; i < cells_[map_.player->get_position().y][map_.player->get_position().x].size(); ++i) {
+                cells_[map_.player->get_position().y][map_.player->get_position().x][i]->remove();
+            }
+            map_.player->deremove();
+            map_.add_object(make_shared<Wall>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '#'));
+            map_.add_object(make_shared<Floor>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '*'));
+        }
+    }
+
+    void draw_ui() override {
+        attron(COLOR_PAIR(2));
+        mvprintw(1, map_.getsize().x + 1, "P is cursor");
+        attron(COLOR_PAIR(3));
+        mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer");
+        attron(COLOR_PAIR(1));
+    }
+
 };
