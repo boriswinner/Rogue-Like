@@ -1,19 +1,19 @@
 #include "game_objects.h"
 #include "curses.h"
 
-class GameManager{
+class GameManager {
 public:
-    explicit GameManager(const string &mapfilename): map_(mapfilename), cells_(map_.get_map()), isrunning_(true){}
+    explicit GameManager(const string &mapfilename) : map_(mapfilename), cells_(map_.get_map()), isrunning_(true) {}
 
-    bool is_running(){
+    bool is_running() {
         return isrunning_;
     }
 
-    void start_game(){
+    void start_game() {
         init_curses();
     }
 
-    void make_move(){
+    void make_move() {
         map_.recontruct();
         draw_map();
         for (int i = 0; i < cells_.size(); i++) {
@@ -23,16 +23,7 @@ public:
                 }
             }
         }
-        int key = getch();
-        if (key == 's') {
-            map_.player->move(map_, 0, 1);
-        } else if (key == 'w') {
-            map_.player->move(map_, 0, -1);
-        } else if (key == 'a') {
-            map_.player->move(map_, -1, 0);
-        } else if (key == 'd') {
-            map_.player->move(map_, 1, 0);
-        }
+        move_player();
         map_.recontruct();
         for (int i = 0; i < cells_.size(); i++) {
             for (int j = 0; j < cells_[i].size(); j++) {
@@ -47,12 +38,48 @@ public:
         }
     }
 
-    void end_game(){
+    void move_player() const {
+        int key = getch();
+        if (key == 's') {
+            map_.player->move(map_, 0, 1);
+        } else if (key == 'w') {
+            map_.player->move(map_, 0, -1);
+        } else if (key == 'a') {
+            map_.player->move(map_, -1, 0);
+        } else if (key == 'd') {
+            map_.player->move(map_, 1, 0);
+        }
+    }
+
+    void end_game() {
         endwin();
     }
 
-    void start_mapeditor(){
+    void start_mapeditor() {
         init_curses();
+    }
+
+    void makemove_mapeditor() {
+        map_.recontruct();
+        draw_map();
+        int key = getch();
+        if (key == 's') {
+            map_.player->move(map_, 0, 1);
+        } else if (key == 'w') {
+            map_.player->move(map_, 0, -1);
+        } else if (key == 'a') {
+            map_.player->move(map_, -1, 0);
+        } else if (key == 'd') {
+            map_.player->move(map_, 1, 0);
+        } else if (key == '1') {
+            for (int i = 0; i < cells_[map_.player->get_position().y][map_.player->get_position().x].size(); ++i) {
+                cells_[map_.player->get_position().y][map_.player->get_position().x][i]->remove();
+            }
+            map_.player->deremove();
+            map_.add_object(make_shared<Wall>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '#'));
+            map_.add_object(make_shared<Floor>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '*'));
+        }
+        map_.recontruct();
     }
 
 protected:
@@ -60,14 +87,18 @@ protected:
     vector<vector<vector<shared_ptr<MapObject>>>> &cells_;
     bool isrunning_;
 
-    void init_curses(){
+    void init_curses() {
         initscr();
         raw();
         noecho();
         curs_set(0);
+        start_color();
+        init_pair(1, COLOR_WHITE, COLOR_BLACK);
+        init_pair(2, COLOR_BLACK, COLOR_RED);
+        init_pair(3, COLOR_BLACK, COLOR_GREEN);
     }
 
-    void draw_hp(){
+    void draw_hp() {
         char player_hp[15] = "Player HP: ";
         itoa(map_.player->get_hp(), player_hp + 11, 10); //11 is player_hp length
         mvprintw(LINES - 1, 1, player_hp);
@@ -76,7 +107,15 @@ protected:
         }
     }
 
-    void draw_map(){
+    void draw_editor_ui() {
+        attron(COLOR_PAIR(2));
+        mvprintw(1, map_.getsize().x + 1, "P is cursor");
+        attron(COLOR_PAIR(3));
+        mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer");
+        attron(COLOR_PAIR(1));
+    }
+
+    void draw_map() {
         clear();
         refresh();
         for (int i = 0; i < cells_.size(); i++) {
@@ -85,6 +124,6 @@ protected:
             }
             addch('\n');
         }
-        draw_hp();
+        draw_editor_ui();
     }
 };

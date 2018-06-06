@@ -54,6 +54,10 @@ public:
         exists_ = false;
     }
 
+    void deremove(){
+        exists_ = true;
+    }
+
     bool exists() {
         return exists_;
     }
@@ -259,7 +263,7 @@ public:
 class Map {
 private:
     int sizex_, sizey_;
-    vector<shared_ptr<MapObject>> objs;
+    vector<shared_ptr<MapObject>> objs_;
     vector<vector<vector<shared_ptr<MapObject>>>> cells;
 public:
     shared_ptr<Player> player;
@@ -278,6 +282,10 @@ public:
     }
 
     void read_objects_from_file(const string &filename);
+
+    void add_object(const shared_ptr<MapObject> &obj){
+        objs_.push_back(obj);
+    }
 
     vector<vector<vector<shared_ptr<MapObject>>>> &get_map() {
         return cells;

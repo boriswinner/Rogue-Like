@@ -42,23 +42,23 @@ void Map::read_objects_from_file(const string &filename) {
     map_file.open(filename);
     int size, mapsize_x, mapsize_y;
     map_file >> size >> mapsize_x >> mapsize_y;
-    objs.reserve(size);
+    objs_.reserve(size);
     setsize(mapsize_x, mapsize_y);
     char symbol = '*';
     int damage, hp, x = 0, y = 0;
     for (int i = 0; i < size; ++i) {
         map_file >> symbol >> x >> y >> damage >> hp;
         if (symbol == '*') {
-            objs.push_back(make_shared<Floor>(Floor(pnt{x, y},'*')));
+            objs_.push_back(make_shared<Floor>(Floor(pnt{x, y},'*')));
         } else if (symbol == 'P') {
             player = make_shared<Player>(pnt{x, y}, hp, damage,'P');
-            objs.push_back(player);
+            objs_.push_back(player);
         } else if (symbol == '&') {
-            objs.push_back(make_shared<Monster>(pnt{x, y}, hp, damage,'&'));
+            objs_.push_back(make_shared<Monster>(pnt{x, y}, hp, damage,'&'));
         } else if (symbol == '#') {
-            objs.push_back(make_shared<Wall>(pnt{x, y},'#'));
+            objs_.push_back(make_shared<Wall>(pnt{x, y},'#'));
         } else if (symbol == '@') {
-            objs.push_back(make_shared<Healer>(pnt{x, y}, 10, '@'));
+            objs_.push_back(make_shared<Healer>(pnt{x, y}, 10, '@'));
         }
     }
 }
@@ -69,10 +69,10 @@ void Map::recontruct() {
             cells[i][j].clear();
         }
     }
-    for (int i = 0; i < objs.size(); ++i) {
-        if (objs[i]->exists()) {
-            pnt pos = objs[i]->get_position();
-            cells[pos.y][pos.x].push_back(objs[i]);
+    for (int i = 0; i < objs_.size(); ++i) {
+        if (objs_[i]->exists()) {
+            pnt pos = objs_[i]->get_position();
+            cells[pos.y][pos.x].push_back(objs_[i]);
         }
     }
 }
