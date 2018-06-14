@@ -2,6 +2,8 @@
 #include <memory>
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
+#include <string>
 
 #pragma once
 #define SGN(x) (((x) > 0) - ((x) < 0))
@@ -62,6 +64,12 @@ public:
         return exists_;
     }
 
+    virtual string export_obj(){
+        stringstream ss;
+        ss << get_image() << " " << get_position().x << " " << get_position().y << " ";
+        return ss.str();
+    }
+
     virtual void collide(MapObject &that) = 0;
 
     virtual void collide(Player &that) = 0;
@@ -109,6 +117,12 @@ public:
 
     void collide(Healer &that) override;
 
+    string export_obj() override {
+        stringstream ss;
+        ss << MapObject::export_obj() << "0 0";
+        return ss.str();
+    }
+
 };
 
 class Wall : public Obstacle {
@@ -125,6 +139,12 @@ public:
     void collide(Monster &that) override;
 
     void collide(Healer &that) override;
+
+    string export_obj() override {
+        stringstream ss;
+        ss << MapObject::export_obj() << "0 0";
+        return ss.str();
+    }
 };
 
 class Healer : public Obstacle {
@@ -147,6 +167,12 @@ public:
     void collide(Monster &that) override;
 
     void collide(Healer &that) override;
+
+    string export_obj() override {
+        stringstream ss;
+        ss << MapObject::export_obj() << healValue_ << " 0";
+        return ss.str();
+    }
 };
 
 class Actor : public MapObject {
@@ -198,6 +224,12 @@ public:
 
     void damage(int damage) {
         this->hp_ -= damage;
+    }
+
+    string export_obj() override {
+        stringstream ss;
+        ss << MapObject::export_obj() << damage_<< " " << hp_;
+        return ss.str();
     }
 
     void collide(MapObject &that) override;
@@ -289,6 +321,10 @@ public:
 
     vector<vector<vector<shared_ptr<MapObject>>>> &get_map() {
         return cells;
+    }
+
+    vector<shared_ptr<MapObject>> &get_objs(){
+        return objs_;
     }
 
     int objs_count(){

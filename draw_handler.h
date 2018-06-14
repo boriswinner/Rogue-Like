@@ -74,7 +74,7 @@ public:
         attron(COLOR_PAIR(2));
         mvprintw(1, map_.getsize().x + 1, "P is cursor");
         attron(COLOR_PAIR(3));
-        mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer, 4- clear");
+        mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer, 4- clear, 0 - save");
         attron(COLOR_PAIR(1));
     }
 };

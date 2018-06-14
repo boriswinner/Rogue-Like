@@ -1,9 +1,7 @@
-//
-// Created by Lenovo on 14.06.2018.
-//
-
+#include "curses.h"
 #include "user_interface.h"
 #include "draw_handler.h"
+#include "game_manager.h"
 
 void MainMenuController::run() {
     Menu main_menu(string("Rogue-Like"), 2, string("Play Game"), string("Open Map Editor"));
@@ -62,7 +60,7 @@ void MapEditorController::run() {
             mvprintw(LINES - 2, 1, "Enter Healer Heal Value:");
             char hp_str[10];
             getstr(hp_str);
-            int hp = strtol(hp_str, nullptr, 0);
+            hp = strtol(hp_str, nullptr, 0);
             if (hp == 0L)
                 return;
             noecho();

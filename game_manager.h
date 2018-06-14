@@ -56,6 +56,8 @@ protected:
                     make_shared<Healer>(pnt{map_.player->get_position().x, map_.player->get_position().y}, hp, '@'));
         } else if (key == '4') {
             clear_player_cell();
+        } else if (key == '0'){
+            export_to_file();
         }
     }
 
@@ -74,13 +76,11 @@ protected:
 
     void export_to_file() {
         ofstream out;
-        echo();
-        mvprintw(LINES - 2, 1, "Enter File Name:");
-        char hp_str[100];
-        getstr(hp_str);
-        noecho();
-        out.open(hp_str);
+        out.open("output.txt");
         out << map_.objs_count() << ' ' << map_.getsize().x << ' ' << map_.getsize().y << '\n';
-
+        for (int i = 0; i < map_.get_objs().size(); ++i){
+            out << map_.get_objs()[i]->export_obj() << '\n';
+        }
+        out.close();
     }
 };
