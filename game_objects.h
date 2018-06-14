@@ -29,6 +29,12 @@ class Monster;
 
 class Healer;
 
+class Bullet;
+
+class Bomb;
+
+class Princess;
+
 class MapObject {
 public:
     explicit MapObject(pnt position, char image) : image_(image), position_(position),
@@ -80,6 +86,12 @@ public:
 
     virtual void collide(Healer &that) = 0;
 
+    virtual void collide(Bullet &that) = 0;
+
+    virtual void collide(Bomb &that) = 0;
+
+    virtual void collide(Princess &that) = 0;
+
 protected:
     pnt position_;
     pnt previous_position_;
@@ -101,6 +113,12 @@ public:
     void collide(Monster &that) override {}
 
     void collide(Healer &that) override {}
+
+    void collide(Bullet &that) override {}
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
 };
 
 class Floor : public Obstacle {
@@ -116,6 +134,12 @@ public:
     void collide(Monster &that) override;
 
     void collide(Healer &that) override;
+
+    void collide(Bullet &that) override {}
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
 
     string export_obj() override {
         stringstream ss;
@@ -139,6 +163,12 @@ public:
     void collide(Monster &that) override;
 
     void collide(Healer &that) override;
+
+    void collide(Bullet &that) override;
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
 
     string export_obj() override {
         stringstream ss;
@@ -168,11 +198,65 @@ public:
 
     void collide(Healer &that) override;
 
+    void collide(Bullet &that) override {}
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
+
     string export_obj() override {
         stringstream ss;
         ss << MapObject::export_obj() << healValue_ << " 0";
         return ss.str();
     }
+};
+
+class Weapon: public Obstacle{
+public:
+    explicit Weapon(pnt position, pnt direction, int damage, char image): Obstacle(position, image), direction_(direction), damage_(damage){}
+
+    int get_damage(){
+        return damage_;
+    }
+
+    pnt get_direction(){
+        return direction_;
+    }
+private:
+    int damage_;
+    pnt direction_;
+};
+
+class Bullet: public Weapon{
+public:
+    explicit Bullet(pnt position, pnt direction, int damage, char image): Weapon(position, direction, damage, image){}
+
+    void move(const Map &map, int xoffset = 0, int yoffset = 0) override;
+
+public:
+    void collide(MapObject &that) override {};
+
+    void collide(Player &that) override {};
+
+    void collide(Wall &that) override;
+
+    void collide(Monster &that) override;
+
+    void collide(Healer &that) override {};
+
+    void collide(Bullet &that) override {}
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
+};
+
+class Bomb: public Weapon{
+public:
+    explicit Bomb(pnt position, pnt direction, int damage, int radius, char image): Weapon(position, direction, damage, image), radius_(radius){}
+
+private:
+    int radius_;
 };
 
 class Actor : public MapObject {
@@ -189,6 +273,12 @@ public:
     void collide(Monster &that) override;
 
     void collide(Healer &that) override;
+
+    void collide(Bullet &that) override {}
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
 };
 
 class Character : public Actor {
@@ -242,6 +332,12 @@ public:
 
     void collide(Healer &that) override;
 
+    void collide(Bullet &that) override {}
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
+
 };
 
 class Player : public Character {
@@ -258,6 +354,11 @@ public:
 
     void collide(Healer &that) override;
 
+    void collide(Bullet &that) override {}
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
 };
 
 class Princess : public Character {
@@ -273,6 +374,12 @@ public:
     void collide(Monster &that) override;
 
     void collide(Healer &that) override;
+
+    void collide(Bullet &that) override {}
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
 };
 
 class Monster : public Character {
@@ -290,6 +397,12 @@ public:
     void collide(Monster &that) override;
 
     void collide(Healer &that) override;
+
+    void collide(Bullet &that) override;
+
+    void collide(Bomb &that) override {}
+
+    void collide(Princess &that) override {}
 };
 
 class Map {

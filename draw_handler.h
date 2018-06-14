@@ -18,11 +18,11 @@ public:
 
     void draw() const {
         clear();
-        refresh();
         printw("----%s----\n", menu_.get_header().c_str());
         for (int i = 0; i < menu_.get_labels().size(); ++i) {
             printw("%d. %s\n", i + 1, menu_.get_labels()[i].c_str());
         }
+        refresh();
     }
 
 protected:
@@ -52,7 +52,6 @@ public:
 
     void draw_map() {
         clear();
-        refresh();
         for (int i = 0; i < map_.get_map().size(); i++) {
             for (int j = 0; j < map_.get_map()[i].size(); j++) {
                 addch(static_cast<const chtype>(map_.get_map()[i][j][map_.get_map()[i][j].size() - 1]->get_image()));
@@ -62,6 +61,7 @@ public:
         mvaddch(map_.player->get_position().y, map_.player->get_position().x,
                 static_cast<const chtype>(map_.player->get_image()));
         draw_ui();
+        refresh();
     }
 
 protected:

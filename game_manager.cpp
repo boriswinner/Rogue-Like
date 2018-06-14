@@ -10,6 +10,7 @@ void GameManager::make_move(int key) {
     }
     check_keys(key);
     map_.recontruct();
+
     for (int i = 0; i < cells_.size(); i++) {
         for (int j = 0; j < cells_[i].size(); j++) {
             for (int z = 0; z < cells_[i][j].size(); z++) {
@@ -33,5 +34,21 @@ void GameManager::check_keys(int key) {
         map_.player->move(map_, -1, 0);
     } else if (key == 'd') {
         map_.player->move(map_, 1, 0);
+    } else if (key == 'i') {
+        int x = map_.player->get_position().x;
+        int y = map_.player->get_position().y;
+        map_.add_object(make_shared<Bullet>(pnt{x, y-1}, pnt{0,-1}, 10, '*'));
+    } else if (key == 'k') {
+        int x = map_.player->get_position().x;
+        int y = map_.player->get_position().y;
+        map_.add_object(make_shared<Bullet>(pnt{x, y+1}, pnt{0,1}, 10, '*'));
+    } else if (key == 'j') {
+        int x = map_.player->get_position().x;
+        int y = map_.player->get_position().y;
+        map_.add_object(make_shared<Bullet>(pnt{x-1, y}, pnt{-1,0}, 10, '*'));
+    } else if (key == 'l') {
+        int x = map_.player->get_position().x;
+        int y = map_.player->get_position().y;
+        map_.add_object(make_shared<Bullet>(pnt{x+1, y}, pnt{1,0}, 10, '*'));
     }
 }

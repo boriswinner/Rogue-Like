@@ -37,6 +37,10 @@ void Monster::collide(Healer &that) {
     Character::collide(that);
 }
 
+void Monster::collide(Bullet &that) {
+    that.collide(*this);
+}
+
 void Map::read_objects_from_file(const string &filename) {
     ifstream map_file;
     map_file.open(filename);
@@ -149,6 +153,10 @@ void Wall::collide(Healer &that) {
     Obstacle::collide(that);
 }
 
+void Wall::collide(Bullet &that) {
+    that.collide(*this);
+}
+
 void Actor::collide(MapObject &that) {
 }
 
@@ -213,4 +221,18 @@ void Healer::collide(Wall &that) {
 }
 
 void Healer::collide(Monster &that) {
+}
+
+void Bullet::collide(Monster &that) {
+    that.damage(this->get_damage());
+    if (that.get_hp() <= 0) that.remove();
+    this->remove();
+}
+
+void Bullet::move(const Map &map, int xoffset, int yoffset) {
+    MapObject::move(map, get_direction().x, get_direction().y);
+}
+
+void Bullet::collide(Wall &that) {
+    this->remove();
 }
