@@ -71,7 +71,7 @@ protected:
             cells_[map_.player->get_position().y][map_.player->get_position().x][i]->remove();
         }
         map_.player->deremove();
-        map_.add_object(make_shared<Floor>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '*'));
+        map_.add_object(make_shared<Floor>(pnt{map_.player->get_position().x, map_.player->get_position().y}, ' '));
     }
 
     void export_to_file() {
