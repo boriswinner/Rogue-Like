@@ -35,6 +35,7 @@ void MapEditorController::run() {
     MapEditorManager map_editor_manager(mapfilename_);
     map_editor_manager.start_game();
     MapEditorDrawHandler map_editor_draw_handler(map_editor_manager.get_map());
+    map_editor_draw_handler.init_curses();
     while (map_editor_manager.is_running()){
         map_editor_draw_handler.draw_map();
         int key = getch();
