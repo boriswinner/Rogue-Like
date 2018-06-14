@@ -65,3 +65,16 @@ public:
 protected:
     Map &map_;
 };
+
+class MapEditorDrawHandler: public GameDrawHandler{
+public:
+    explicit MapEditorDrawHandler(Map &map) : GameDrawHandler(map) {}
+
+    void draw_ui() override {
+        attron(COLOR_PAIR(2));
+        mvprintw(1, map_.getsize().x + 1, "P is cursor");
+        attron(COLOR_PAIR(3));
+        mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer, 4- clear");
+        attron(COLOR_PAIR(1));
+    }
+};
