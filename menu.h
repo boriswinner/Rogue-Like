@@ -1,10 +1,14 @@
 #pragma once
 #include <string>
+#include <vector>
+#include <cstdarg>
+
+using std::string;
+using std::vector;
 
 class Menu{
 public:
     explicit Menu(const string& header, int num_of_labels, const string& label,...){
-        init_curses();
         header_ = header;
         va_list args;
         va_start(args, label);
@@ -20,33 +24,15 @@ public:
         labels_.push_back(name);
     }
 
-    int make_move(){
-        draw();
-        int key = getch();
-        for (int i = 1; i < 10; ++i){
-            if (key == i){
-                return i;
-            }
-        }
+    string& get_header(){
+        return header_;
     }
 
-    void draw(){
-        clear();
-        refresh();
-        printw("----%s----\n",header_.c_str());
-        for (int i = 0; i < labels_.size(); ++i){
-            printw("%d. %s\n",i+1,labels_[i].c_str());
-        }
+    vector <string>& get_labels(){
+        return labels_;
     }
 
 protected:
-    void init_curses() {
-        initscr();
-        raw();
-        noecho();
-        curs_set(0);
-    }
-
     string header_;
     vector <string> labels_;
 };
