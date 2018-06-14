@@ -59,6 +59,8 @@ public:
             }
             addch('\n');
         }
+        mvaddch(map_.player->get_position().y, map_.player->get_position().x,
+                static_cast<const chtype>(map_.player->get_image()));
         draw_ui();
     }
 

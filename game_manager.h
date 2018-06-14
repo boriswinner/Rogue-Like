@@ -79,7 +79,9 @@ protected:
         out.open("output.txt");
         out << map_.objs_count() << ' ' << map_.getsize().x << ' ' << map_.getsize().y << '\n';
         for (int i = 0; i < map_.get_objs().size(); ++i){
-            out << map_.get_objs()[i]->export_obj() << '\n';
+            if (map_.get_objs()[i]->exists()) {
+                out << map_.get_objs()[i]->export_obj() << '\n';
+            }
         }
         out.close();
     }
