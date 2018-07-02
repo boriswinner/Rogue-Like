@@ -1,6 +1,9 @@
+#pragma once
 #include <algorithm>
 #include "game_objects.h"
 #include "curses.h"
+//#include "config.h"
+
 enum game_statuses{victory=2,defeat=1,isrunning=0};
 
 class GameManager {

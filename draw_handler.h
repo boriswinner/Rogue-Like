@@ -1,3 +1,4 @@
+#pragma once
 #include "curses.h"
 #include "menu.h"
 #include "game_objects.h"

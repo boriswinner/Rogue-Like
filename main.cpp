@@ -1,6 +1,9 @@
 #include "menu.h"
 #include "user_interface.h"
+#include "config.h"
 
+
+Config &game_config = Config::Instance();
 using namespace std;
 
 int main() {

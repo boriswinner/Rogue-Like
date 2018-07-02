@@ -1,6 +1,8 @@
 #pragma once
-
+#include "curses.h"
 #include "game_objects.h"
+#include "draw_handler.h"
+#include "game_manager.h"
 
 class MainMenuController {
 public:

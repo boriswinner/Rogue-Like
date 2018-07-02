@@ -1,7 +1,5 @@
-#include "curses.h"
 #include "user_interface.h"
-#include "draw_handler.h"
-#include "game_manager.h"
+#include "config.h"
 
 void MainMenuController::run() {
     Menu main_menu(string("Rogue-Like"), 3, string("Play Game"), string("Open Map Editor"), string("Exit"));
@@ -10,13 +8,13 @@ void MainMenuController::run() {
     while (true){
         menu_draw_handler.draw();
         int choice = getch();
-        if (choice == '1') {
+        if (choice == game_config.data["Choice1"]) {
             GameController game_controller(mapfilename_);
             game_controller.run();
-        } else if (choice == '2') {
+        } else if (choice == game_config.data["Choice2"]) {
             MapEditorController map_controller(mapfilename_);
             map_controller.run();
-        } else if (choice == '3') {
+        } else if (choice == game_config.data["Choice3"]) {
             return;
         }
     }
@@ -38,7 +36,7 @@ void GameController::run() {
     }
     while (true){
         int key = getch();
-        if (key == 'r'){
+        if (key == game_config.data["ReturnKey"]){
             return;
         }
     }
