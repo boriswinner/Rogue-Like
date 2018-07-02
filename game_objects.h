@@ -66,11 +66,11 @@ public:
         exists_ = true;
     }
 
-    bool exists() {
+    bool exists() const {
         return exists_;
     }
 
-    virtual string export_obj(){
+    virtual string export_obj() const{
         stringstream ss;
         ss << get_image() << " " << get_position().x << " " << get_position().y << " ";
         return ss.str();
@@ -141,7 +141,7 @@ public:
 
     void collide(Princess &that) override {}
 
-    string export_obj() override {
+    string export_obj() const override {
         stringstream ss;
         ss << MapObject::export_obj() << "0 0";
         return ss.str();
@@ -170,7 +170,7 @@ public:
 
     void collide(Princess &that) override {}
 
-    string export_obj() override {
+    string export_obj() const override {
         stringstream ss;
         ss << MapObject::export_obj() << "0 0";
         return ss.str();
@@ -204,7 +204,7 @@ public:
 
     void collide(Princess &that) override {}
 
-    string export_obj() override {
+    string export_obj() const override {
         stringstream ss;
         ss << MapObject::export_obj() << healValue_ << " 0";
         return ss.str();
@@ -316,7 +316,7 @@ public:
         this->hp_ -= damage;
     }
 
-    string export_obj() override {
+    string export_obj() const override {
         stringstream ss;
         ss << MapObject::export_obj() << damage_<< " " << hp_;
         return ss.str();

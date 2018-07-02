@@ -4,7 +4,7 @@
 #include "game_manager.h"
 
 void MainMenuController::run() {
-    Menu main_menu(string("Rogue-Like"), 2, string("Play Game"), string("Open Map Editor"));
+    Menu main_menu(string("Rogue-Like"), 3, string("Play Game"), string("Open Map Editor"), string("Exit"));
     MainMenuDrawHandler menu_draw_handler(main_menu);
     menu_draw_handler.init_curses();
     while (true){
@@ -16,6 +16,8 @@ void MainMenuController::run() {
         } else if (choice == '2') {
             MapEditorController map_controller(mapfilename_);
             map_controller.run();
+        } else if (choice == '3') {
+            return;
         }
     }
 }
