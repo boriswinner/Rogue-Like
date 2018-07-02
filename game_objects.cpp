@@ -65,6 +65,9 @@ void Map::read_objects_from_file(const string &filename) {
             objs_.push_back(make_shared<Wall>(pnt{x, y},'#'));
         } else if (symbol == '@') {
             objs_.push_back(make_shared<Healer>(pnt{x, y}, damage, '@'));
+        } else if (symbol == '+'){
+            princess = make_shared<Princess>(pnt{x, y}, hp, damage, '+');
+            objs_.push_back(princess);
         }
     }
 }
@@ -116,6 +119,10 @@ void Player::collide(Monster &that) {
 
 void Player::collide(Healer &that) {
     that.collide(*this);
+}
+
+void Player::collide(Princess &that) {
+    that.collide_with_player();
 }
 
 void Floor::collide(Player &that) {
@@ -190,9 +197,11 @@ void Character::collide(Healer &that) {
 }
 
 void Princess::collide(MapObject &that) {
+    that.collide(*this);
 }
 
 void Princess::collide(Player &that) {
+    that.collide(*this);
 }
 
 void Princess::collide(Wall &that) {

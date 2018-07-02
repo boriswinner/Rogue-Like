@@ -1,12 +1,14 @@
+#include <algorithm>
 #include "game_objects.h"
 #include "curses.h"
+enum game_statuses{victory=2,defeat=1,isrunning=0};
 
 class GameManager {
 public:
-    explicit GameManager(const string &map_file_name) : map_(map_file_name), cells_(map_.get_map()), isrunning_(true) {}
+    explicit GameManager(const string &map_file_name) : map_(map_file_name), cells_(map_.get_map()), game_status_(isrunning) {}
 
-    bool is_running() {
-        return isrunning_;
+    int game_status() {
+        return game_status_;
     }
 
     void start_game() {
@@ -17,8 +19,12 @@ public:
 
     virtual void check_keys(int key);
 
-    void end_game() {
-        isrunning_ = false;
+    void win_game() {
+        game_status_ = victory;
+    }
+
+    void lose_game(){
+        game_status_ = defeat;
     }
 
     Map &get_map() {
@@ -28,7 +34,7 @@ public:
 protected:
     Map map_;
     vector<vector<vector<shared_ptr<MapObject>>>> &cells_;
-    bool isrunning_;
+    int game_status_;
 };
 
 class MapEditorManager : public GameManager {
@@ -36,7 +42,7 @@ public:
     explicit MapEditorManager(const string &mapfilename) : GameManager(mapfilename) {}
 
     void make_move(int key, int hp = 0, int dmg = 0) {
-        map_.recontruct();
+//        map_.recontruct();
         check_keys(key, hp, dmg);
         map_.recontruct();
     }
@@ -58,6 +64,9 @@ protected:
             clear_player_cell();
         } else if (key == '0'){
             export_to_file();
+        } else if (key == '5'){
+            replace_player_cell(
+                    make_shared<Princess>(pnt{map_.player->get_position().x, map_.player->get_position().y}, 1, 0, '+'));
         }
     }
 
@@ -76,12 +85,17 @@ protected:
 
     void export_to_file() {
         ofstream out;
+        vector<string> objects_strings;
         out.open("output.txt");
         out << map_.objs_count() << ' ' << map_.getsize().x << ' ' << map_.getsize().y << '\n';
         for (int i = 0; i < map_.get_objs().size(); ++i){
             if (map_.get_objs()[i]->exists()) {
-                out << map_.get_objs()[i]->export_obj() << '\n';
+                objects_strings.push_back(map_.get_objs()[i]->export_obj() + string{'\n'});
             }
+        }
+        sort (objects_strings.begin(), objects_strings.end());
+        for (int i = 0; i < objects_strings.size(); ++i){
+            out << objects_strings[i];
         }
         out.close();
     }

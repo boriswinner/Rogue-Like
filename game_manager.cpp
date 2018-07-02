@@ -23,6 +23,12 @@ void GameManager::make_move(int key) {
         }
     }
     map_.recontruct();
+    if (map_.player->get_hp() <= 0){
+        lose_game();
+    }
+    if (map_.princess->collided_with_player()){
+        win_game();
+    }
 }
 
 void GameManager::check_keys(int key) {
@@ -50,5 +56,7 @@ void GameManager::check_keys(int key) {
         int x = map_.player->get_position().x;
         int y = map_.player->get_position().y;
         map_.add_object(make_shared<Bullet>(pnt{x+1, y}, pnt{1,0}, 10, '*'));
+    } else if (key == 'x'){
+        win_game();
     }
 }

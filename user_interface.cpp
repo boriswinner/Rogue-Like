@@ -7,14 +7,16 @@ void MainMenuController::run() {
     Menu main_menu(string("Rogue-Like"), 2, string("Play Game"), string("Open Map Editor"));
     MainMenuDrawHandler menu_draw_handler(main_menu);
     menu_draw_handler.init_curses();
-    menu_draw_handler.draw();
-    int choice = getch();
-    if (choice == '1') {
-        GameController game_controller(mapfilename_);
-        game_controller.run();
-    } else if (choice == '2') {
-        MapEditorController map_controller(mapfilename_);
-        map_controller.run();
+    while (true){
+        menu_draw_handler.draw();
+        int choice = getch();
+        if (choice == '1') {
+            GameController game_controller(mapfilename_);
+            game_controller.run();
+        } else if (choice == '2') {
+            MapEditorController map_controller(mapfilename_);
+            map_controller.run();
+        }
     }
 }
 
@@ -22,12 +24,23 @@ void GameController::run() {
     GameManager game_manager(mapfilename_);
     game_manager.start_game();
     GameDrawHandler game_draw_handler(game_manager.get_map());
-    while (game_manager.is_running()) {
+    while (game_manager.game_status() == isrunning) {
         game_draw_handler.draw_map();
         int key = getch();
         game_manager.make_move(key);
     }
-    game_manager.end_game();
+    if (game_manager.game_status() == defeat){
+        game_draw_handler.draw_defeat();
+    } else if (game_manager.game_status() == victory){
+        game_draw_handler.draw_victory();
+    }
+    while (true){
+        int key = getch();
+        if (key == 'r'){
+            return;
+        }
+    }
+
     endwin();
 }
 
@@ -36,7 +49,7 @@ void MapEditorController::run() {
     map_editor_manager.start_game();
     MapEditorDrawHandler map_editor_draw_handler(map_editor_manager.get_map());
     map_editor_draw_handler.init_curses();
-    while (map_editor_manager.is_running()){
+    while (map_editor_manager.game_status() == isrunning) {
         map_editor_draw_handler.draw_map();
         int key = getch();
         int hp = 0;

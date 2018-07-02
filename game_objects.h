@@ -358,12 +358,20 @@ public:
 
     void collide(Bomb &that) override {}
 
-    void collide(Princess &that) override {}
+    void collide(Princess &that) override;
 };
 
 class Princess : public Character {
 public:
-    Princess(pnt position, int hp, int damage, char image) : Character(position, hp, damage, image) {}
+    Princess(pnt position, int hp, int damage, char image) : Character(position, hp, damage, image), collided_with_player_(
+            false) {}
+
+    bool collided_with_player(){
+        return collided_with_player_;
+    }
+    void collide_with_player(){
+        collided_with_player_ = true;
+    }
 
     void collide(MapObject &that) override;
 
@@ -380,6 +388,9 @@ public:
     void collide(Bomb &that) override {}
 
     void collide(Princess &that) override {}
+
+private:
+    bool collided_with_player_;
 };
 
 class Monster : public Character {
@@ -412,6 +423,7 @@ private:
     vector<vector<vector<shared_ptr<MapObject>>>> cells;
 public:
     shared_ptr<Player> player;
+    shared_ptr<Princess> princess;
 public:
     explicit Map(const string &filename);
 

@@ -45,9 +45,14 @@ public:
         char player_hp[15] = "Player HP: ";
         itoa(map_.player->get_hp(), player_hp + 11, 10); //11 is player_hp length
         mvprintw(LINES - 1, 1, player_hp);
-        if (map_.player->get_hp() <= 0) {
-            mvprintw(LINES - 1, 1, "GAME OVER! PRESS R TO RESET");
-        }
+    }
+
+    virtual void draw_defeat() {
+        mvprintw(LINES - 1, 1, "You've been defeated! Press R to return to menu");
+    }
+
+    virtual void draw_victory() {
+        mvprintw(LINES - 1, 1, "You win! Press R to return to menu");
     }
 
     void draw_map() {
@@ -76,7 +81,7 @@ public:
         attron(COLOR_PAIR(2));
         mvprintw(1, map_.getsize().x + 1, "P is cursor");
         attron(COLOR_PAIR(3));
-        mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer, 4- clear, 0 - save");
+        mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer, 4- clear, 5 - princess, 0 - save");
         attron(COLOR_PAIR(1));
     }
 };
