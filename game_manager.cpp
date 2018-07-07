@@ -71,7 +71,8 @@ void MapEditorManager::make_move(int key, int hp, int dmg) {
 }
 
 void MapEditorManager::check_keys(int key, int hp, int dmg) {
-    GameManager::check_keys(vector<int>(key));
+    vector<int> t({key});
+    GameManager::check_keys(t);
     if (key == game_config.data["Choice1"]) {
         replace_player_cell(
                 make_shared<Wall>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '#'));

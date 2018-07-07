@@ -35,7 +35,7 @@ void GameController::run() {
     while (game_manager.game_status() == isrunning) {
         game_draw_handler.draw_map();
         vector<int> keys;
-        while (true) {
+        while (game_manager.game_status() == isrunning) {
             keys.clear();
             if (GetAsyncKeyState(VK_LEFT)) {
                 keys.push_back(game_config.data["ButtonLeft"]);
@@ -68,20 +68,6 @@ void GameController::run() {
             game_draw_handler.draw_map();
             std::this_thread::sleep_for(100ms);
             }
-        /*while(int key = getch()){
-            auto frame_start = std::chrono::steady_clock::now();
-            if (key > 0){
-                game_manager.make_move(key);
-            } else{
-                game_manager.make_move(game_config.data["NotUsedKey"]);
-            }
-            game_draw_handler.draw_map();
-            auto frame_end = std::chrono::steady_clock::now();
-            auto delay = frame_ratio - (frame_end - frame_start);
-            std::this_thread::sleep_for(delay);
-            //flushinp();
-        }*/
-
     }
     if (game_manager.game_status() == defeat){
         game_draw_handler.draw_defeat();
@@ -94,7 +80,6 @@ void GameController::run() {
             return;
         }
     }
-
     endwin();
 }
 
