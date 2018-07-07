@@ -26,9 +26,11 @@ void GameDrawHandler::init_curses() {
 }
 
 void GameDrawHandler::draw_ui() {
-    char player_hp[15] = "Player HP: ";
-    itoa(map_.player->get_hp(), player_hp + 11, 10); //11 is player_hp length
-    mvprintw(LINES - 1, 1, player_hp);
+    string hp = game_config.data["PlayerHP"].dump();
+    hp += to_string(map_.player->get_hp());
+    char * cstr = new char [hp.length()+1];
+    std::strcpy (cstr, hp.c_str());
+    mvprintw(LINES - 1, 1, cstr);
 }
 
 void GameDrawHandler::draw_defeat() {
@@ -55,8 +57,9 @@ void GameDrawHandler::draw_map() {
 
 void MapEditorDrawHandler::draw_ui() {
     attron(COLOR_PAIR(2));
-    mvprintw(1, map_.getsize().x + 1, "P is cursor");
+    mvprintw(1, map_.getsize().x + 1, game_config.data["EditorHelp1"].dump().c_str());
     attron(COLOR_PAIR(3));
-    mvprintw(2, map_.getsize().x + 1, "1 - wall, 2 - monster, 3 - healer, 4- clear, 5 - princess, 0 - save");
+    mvprintw(2, map_.getsize().x + 1, game_config.data["EditorHelp2"].dump().c_str());
+    mvprintw(3, map_.getsize().x + 1, game_config.data["EditorHelp3"].dump().c_str());
     attron(COLOR_PAIR(1));
 }

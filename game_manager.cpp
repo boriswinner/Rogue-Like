@@ -90,6 +90,8 @@ void MapEditorManager::check_keys(int key, int hp, int dmg) {
     } else if (key == game_config.data["Choice5"]){
         replace_player_cell(
                 make_shared<Princess>(pnt{map_.player->get_position().x, map_.player->get_position().y}, 1, 0, '+'));
+    } else if (key == game_config.data["Escape"]){
+        game_status_ = defeat;
     }
 }
 
