@@ -18,9 +18,9 @@ public:
         map_.recontruct();
     }
 
-    virtual void make_move(int key);
+    virtual void make_move(const vector <int> &keys);
 
-    virtual void check_keys(int key);
+    virtual void check_keys(const vector <int> &keys);
 
     void win_game() {
         game_status_ = victory;

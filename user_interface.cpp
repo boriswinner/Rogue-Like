@@ -34,22 +34,41 @@ void GameController::run() {
     nodelay(stdscr, TRUE);
     while (game_manager.game_status() == isrunning) {
         game_draw_handler.draw_map();
+        vector<int> keys;
         while (true) {
+            keys.clear();
             if (GetAsyncKeyState(VK_LEFT)) {
-                game_manager.make_move(game_config.data["ButtonLeft"]);
-            } else if (GetAsyncKeyState(VK_RIGHT)){
-                game_manager.make_move(game_config.data["ButtonRight"]);
-            } else if (GetAsyncKeyState(VK_DOWN)){
-                game_manager.make_move(game_config.data["ButtonDown"]);
-            } else if (GetAsyncKeyState(VK_UP)){
-                game_manager.make_move(game_config.data["ButtonUp"]);
-            } else {
-                game_manager.make_move(game_config.data["NotUsedKey"]);
+                keys.push_back(game_config.data["ButtonLeft"]);
             }
+            if (GetAsyncKeyState(VK_RIGHT)){
+                keys.push_back(game_config.data["ButtonRight"]);
+            }
+            if (GetAsyncKeyState(VK_DOWN)){
+                keys.push_back(game_config.data["ButtonDown"]);
+            }
+            if (GetAsyncKeyState(VK_UP)){
+                keys.push_back(game_config.data["ButtonUp"]);
+            }
+            if (GetAsyncKeyState(0x57)){
+                keys.push_back(game_config.data["ButtonFireUp"]);
+            }
+            if (GetAsyncKeyState(0x41)){
+                keys.push_back(game_config.data["ButtonFireLeft"]);
+            }
+            if (GetAsyncKeyState(0x53)){
+                keys.push_back(game_config.data["ButtonFireDown"]);
+            }
+            if (GetAsyncKeyState(0x44)){
+                keys.push_back(game_config.data["ButtonFireRight"]);
+            }
+            if (GetAsyncKeyState(0x58)){
+                keys.push_back(game_config.data["PressXToWin"]);
+            }
+            game_manager.make_move(keys);
             game_draw_handler.draw_map();
             std::this_thread::sleep_for(100ms);
             }
-        while(int key = getch()){
+        /*while(int key = getch()){
             auto frame_start = std::chrono::steady_clock::now();
             if (key > 0){
                 game_manager.make_move(key);
@@ -61,7 +80,7 @@ void GameController::run() {
             auto delay = frame_ratio - (frame_end - frame_start);
             std::this_thread::sleep_for(delay);
             //flushinp();
-        }
+        }*/
 
     }
     if (game_manager.game_status() == defeat){

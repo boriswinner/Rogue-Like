@@ -1,7 +1,7 @@
 #include "game_manager.h"
 #include "config.h"
 
-void GameManager::make_move(int key) {
+void GameManager::make_move(const vector <int> &keys) {
     for (int i = 0; i < cells_.size(); i++) {
         for (int j = 0; j < cells_[i].size(); j++) {
             for (int z = 0; z < cells_[i][j].size(); z++) {
@@ -9,7 +9,7 @@ void GameManager::make_move(int key) {
             }
         }
     }
-    check_keys(key);
+    check_keys(keys);
     map_.recontruct();
 
     for (int i = 0; i < cells_.size(); i++) {
@@ -32,33 +32,35 @@ void GameManager::make_move(int key) {
     }
 }
 
-void GameManager::check_keys(int key) {
-    if (key == game_config.data["ButtonDown"]) {
-        map_.player->move(map_, 0, 1);
-    } else if (key == game_config.data["ButtonUp"]) {
-        map_.player->move(map_, 0, -1);
-    } else if (key == game_config.data["ButtonLeft"]) {
-        map_.player->move(map_, -1, 0);
-    } else if (key == game_config.data["ButtonRight"]) {
-        map_.player->move(map_, 1, 0);
-    } else if (key == game_config.data["ButtonFireUp"]) {
-        int x = map_.player->get_position().x;
-        int y = map_.player->get_position().y;
-        map_.add_object(make_shared<Bullet>(pnt{x, y-1}, pnt{0,-1}, 10, '*'));
-    } else if (key == game_config.data["ButtonFireDown"]) {
-        int x = map_.player->get_position().x;
-        int y = map_.player->get_position().y;
-        map_.add_object(make_shared<Bullet>(pnt{x, y+1}, pnt{0,1}, 10, '*'));
-    } else if (key == game_config.data["ButtonFireLeft"]) {
-        int x = map_.player->get_position().x;
-        int y = map_.player->get_position().y;
-        map_.add_object(make_shared<Bullet>(pnt{x-1, y}, pnt{-1,0}, 10, '*'));
-    } else if (key == game_config.data["ButtonFireRight"]) {
-        int x = map_.player->get_position().x;
-        int y = map_.player->get_position().y;
-        map_.add_object(make_shared<Bullet>(pnt{x+1, y}, pnt{1,0}, 10, '*'));
-    } else if (key == game_config.data["PressXToWin"]){
-        win_game();
+void GameManager::check_keys(const vector <int> &keys) {
+    for (auto key: keys){
+        if (key == game_config.data["ButtonDown"]) {
+            map_.player->move(map_, 0, 1);
+        } else if (key == game_config.data["ButtonUp"]) {
+            map_.player->move(map_, 0, -1);
+        } else if (key == game_config.data["ButtonLeft"]) {
+            map_.player->move(map_, -1, 0);
+        } else if (key == game_config.data["ButtonRight"]) {
+            map_.player->move(map_, 1, 0);
+        } else if (key == game_config.data["ButtonFireUp"]) {
+            int x = map_.player->get_position().x;
+            int y = map_.player->get_position().y;
+            map_.add_object(make_shared<Bullet>(pnt{x, y-1}, pnt{0,-1}, 10, '*'));
+        } else if (key == game_config.data["ButtonFireDown"]) {
+            int x = map_.player->get_position().x;
+            int y = map_.player->get_position().y;
+            map_.add_object(make_shared<Bullet>(pnt{x, y+1}, pnt{0,1}, 10, '*'));
+        } else if (key == game_config.data["ButtonFireLeft"]) {
+            int x = map_.player->get_position().x;
+            int y = map_.player->get_position().y;
+            map_.add_object(make_shared<Bullet>(pnt{x-1, y}, pnt{-1,0}, 10, '*'));
+        } else if (key == game_config.data["ButtonFireRight"]) {
+            int x = map_.player->get_position().x;
+            int y = map_.player->get_position().y;
+            map_.add_object(make_shared<Bullet>(pnt{x+1, y}, pnt{1,0}, 10, '*'));
+        } else if (key == game_config.data["PressXToWin"]){
+            win_game();
+        }
     }
 }
 
@@ -69,7 +71,7 @@ void MapEditorManager::make_move(int key, int hp, int dmg) {
 }
 
 void MapEditorManager::check_keys(int key, int hp, int dmg) {
-    GameManager::check_keys(key);
+    GameManager::check_keys(vector<int>(key));
     if (key == game_config.data["Choice1"]) {
         replace_player_cell(
                 make_shared<Wall>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '#'));
