@@ -16,7 +16,13 @@ protected:
 
 class GameController {
 public:
-    explicit GameController(string mapfilename) : mapfilename_(std::move(mapfilename)) {};
+    explicit GameController(string mapfilename) : mapfilename_(std::move(mapfilename)) {
+        nodelay(stdscr, TRUE);
+    };
+
+    ~GameController(){
+        nodelay(stdscr, FALSE);
+    }
 
     void run();
 

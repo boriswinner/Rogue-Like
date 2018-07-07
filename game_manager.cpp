@@ -75,11 +75,11 @@ void MapEditorManager::check_keys(int key, int hp, int dmg) {
     GameManager::check_keys(t);
     if (key == game_config.data["Choice1"]) {
         replace_player_cell(
-                make_shared<Wall>(pnt{map_.player->get_position().x, map_.player->get_position().y}, '#'));
+                make_shared<Wall>(pnt{map_.player->get_position().x, map_.player->get_position().y}, game_config.data["WallTexture"].dump()[1]));
     } else if (key == game_config.data["Choice2"]) {
         replace_player_cell(
                 make_shared<Monster>(pnt{map_.player->get_position().x, map_.player->get_position().y}, hp, dmg,
-                                     '&'));
+                                     game_config.data["MonsterTexture"].dump()[1]));
     } else if (key == game_config.data["Choice3"]) {
         replace_player_cell(
                 make_shared<Healer>(pnt{map_.player->get_position().x, map_.player->get_position().y}, hp, '@'));

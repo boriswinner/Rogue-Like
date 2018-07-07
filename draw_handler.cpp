@@ -1,4 +1,5 @@
 #include "draw_handler.h"
+#include "config.h"
 
 void DrawHandler::init_curses() {
     initscr();
@@ -31,11 +32,11 @@ void GameDrawHandler::draw_ui() {
 }
 
 void GameDrawHandler::draw_defeat() {
-    mvprintw(LINES - 1, 1, "You've been defeated! Press R to return to menu");
+    mvprintw(LINES - 1, 1, game_config.data["LoseMessage"].dump().c_str());
 }
 
 void GameDrawHandler::draw_victory() {
-    mvprintw(LINES - 1, 1, "You win! Press R to return to menu");
+    mvprintw(LINES - 1, 1, game_config.data["WinMessage"].dump().c_str());
 }
 
 void GameDrawHandler::draw_map() {

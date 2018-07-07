@@ -30,7 +30,6 @@ void GameController::run() {
     GameManager game_manager(mapfilename_);
     game_manager.start_game();
     GameDrawHandler game_draw_handler(game_manager.get_map());
-    std::chrono::duration<long, std::ratio<5, 25>> frame_ratio{ 1 };
     nodelay(stdscr, TRUE);
     while (game_manager.game_status() == isrunning) {
         game_draw_handler.draw_map();

@@ -1,4 +1,5 @@
 #include "game_objects.h"
+#include "config.h"
 
 void MapObject::move(const Map &map, int xoffset, int yoffset) {
     previous_position_ = position_;
@@ -56,17 +57,17 @@ void Map::read_objects_from_file(const string &filename) {
         map_file >>  x >> y >> damage >> hp;
         if (symbol == ' ') {
             objs_.push_back(make_shared<Floor>(Floor(pnt{x, y},' ')));
-        } else if (symbol == 'P') {
-            player = make_shared<Player>(pnt{x, y}, hp, damage,'P');
+        } else if (symbol == game_config.data["PlayerTexture"].dump()[1]) {
+            player = make_shared<Player>(pnt{x, y}, hp, damage,game_config.data["PlayerTexture"].dump()[1]);
             objs_.push_back(player);
-        } else if (symbol == '&') {
-            objs_.push_back(make_shared<Monster>(pnt{x, y}, hp, damage,'&'));
-        } else if (symbol == '#') {
-            objs_.push_back(make_shared<Wall>(pnt{x, y},'#'));
-        } else if (symbol == '@') {
-            objs_.push_back(make_shared<Healer>(pnt{x, y}, damage, '@'));
-        } else if (symbol == '+'){
-            princess = make_shared<Princess>(pnt{x, y}, hp, damage, '+');
+        } else if (symbol == game_config.data["MonsterTexture"].dump()[1]) {
+            objs_.push_back(make_shared<Monster>(pnt{x, y}, hp, damage,game_config.data["MonsterTexture"].dump()[1]));
+        } else if (symbol == game_config.data["WallTexture"].dump()[1]) {
+            objs_.push_back(make_shared<Wall>(pnt{x, y},game_config.data["WallTexture"].dump()[1]));
+        } else if (symbol == game_config.data["HealerTexture"].dump()[1]) {
+            objs_.push_back(make_shared<Healer>(pnt{x, y}, damage, game_config.data["HealerTexture"].dump()[1]));
+        } else if (symbol == game_config.data["PrincessTexture"].dump()[1]){
+            princess = make_shared<Princess>(pnt{x, y}, hp, damage, game_config.data["PrincessTexture"].dump()[1]);
             objs_.push_back(princess);
         }
     }
