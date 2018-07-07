@@ -10,6 +10,18 @@ void GameManager::make_move(const vector <int> &keys) {
         }
     }
     check_keys(keys);
+    check_collides();
+
+    map_.recontruct();
+    if (map_.player->get_hp() <= 0){
+        lose_game();
+    }
+    if (map_.princess->collided_with_player()){
+        win_game();
+    }
+}
+
+void GameManager::check_collides() {
     map_.recontruct();
 
     for (int i = 0; i < cells_.size(); i++) {
@@ -23,41 +35,38 @@ void GameManager::make_move(const vector <int> &keys) {
             }
         }
     }
-    map_.recontruct();
-    if (map_.player->get_hp() <= 0){
-        lose_game();
-    }
-    if (map_.princess->collided_with_player()){
-        win_game();
-    }
 }
 
 void GameManager::check_keys(const vector <int> &keys) {
     for (auto key: keys){
         if (key == game_config.data["ButtonDown"]) {
             map_.player->move(map_, 0, 1);
+            check_collides();
         } else if (key == game_config.data["ButtonUp"]) {
             map_.player->move(map_, 0, -1);
+            check_collides();
         } else if (key == game_config.data["ButtonLeft"]) {
             map_.player->move(map_, -1, 0);
+            check_collides();
         } else if (key == game_config.data["ButtonRight"]) {
             map_.player->move(map_, 1, 0);
+            check_collides();
         } else if (key == game_config.data["ButtonFireUp"]) {
             int x = map_.player->get_position().x;
             int y = map_.player->get_position().y;
-            map_.add_object(make_shared<Bullet>(pnt{x, y-1}, pnt{0,-1}, 10, '*'));
+            map_.add_object(make_shared<Bullet>(pnt{x, y-1}, pnt{0,-1}, game_config.data["BulletDamage"], '*'));
         } else if (key == game_config.data["ButtonFireDown"]) {
             int x = map_.player->get_position().x;
             int y = map_.player->get_position().y;
-            map_.add_object(make_shared<Bullet>(pnt{x, y+1}, pnt{0,1}, 10, '*'));
+            map_.add_object(make_shared<Bullet>(pnt{x, y+1}, pnt{0,1}, game_config.data["BulletDamage"], '*'));
         } else if (key == game_config.data["ButtonFireLeft"]) {
             int x = map_.player->get_position().x;
             int y = map_.player->get_position().y;
-            map_.add_object(make_shared<Bullet>(pnt{x-1, y}, pnt{-1,0}, 10, '*'));
+            map_.add_object(make_shared<Bullet>(pnt{x-1, y}, pnt{-1,0}, game_config.data["BulletDamage"], '*'));
         } else if (key == game_config.data["ButtonFireRight"]) {
             int x = map_.player->get_position().x;
             int y = map_.player->get_position().y;
-            map_.add_object(make_shared<Bullet>(pnt{x+1, y}, pnt{1,0}, 10, '*'));
+            map_.add_object(make_shared<Bullet>(pnt{x+1, y}, pnt{1,0}, game_config.data["BulletDamage"], '*'));
         } else if (key == game_config.data["PressXToWin"]){
             win_game();
         }

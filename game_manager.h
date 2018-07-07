@@ -38,6 +38,8 @@ protected:
     Map map_;
     vector<vector<vector<shared_ptr<MapObject>>>> &cells_;
     int game_status_;
+
+    void check_collides();
 };
 
 class MapEditorManager : public GameManager {
